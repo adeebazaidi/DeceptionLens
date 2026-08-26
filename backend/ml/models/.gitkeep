@@ -1,0 +1,3 @@
+# models/.gitkeep
+# Trained model files are saved here by ml/train_classifier.py
+# forgery_model.joblib and feature_names.json will appear after training
