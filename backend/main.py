@@ -56,3 +56,9 @@ app.include_router(image_router, prefix="/api/image", tags=["Image Analysis"])
 @app.get("/health", tags=["Health"])
 async def health_check():
     return {"status": "ok", "service": "DeceptionLens API"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+
