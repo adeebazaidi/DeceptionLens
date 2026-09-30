@@ -17,6 +17,7 @@ load_dotenv()
 
 from api.routes.image_routes import router as image_router
 from api.routes.fingerprint_routes import router as fingerprint_router
+from api.routes.signature_routes import router as signature_router
 
 # ── App ─────────────────────────────────────────────────────────────────────
 app = FastAPI(
@@ -44,7 +45,7 @@ app.add_middleware(
 BASE_DIR = Path(__file__).parent
 OUTPUTS_DIR = BASE_DIR / "outputs"
 OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
-for sub in ("entropy", "ela", "noise", "fingerprint"):
+for sub in ("entropy", "ela", "noise", "fingerprint", "signature"):
     (OUTPUTS_DIR / sub).mkdir(parents=True, exist_ok=True)
 
 app.mount("/outputs", StaticFiles(directory=str(OUTPUTS_DIR)), name="outputs")
@@ -52,6 +53,7 @@ app.mount("/outputs", StaticFiles(directory=str(OUTPUTS_DIR)), name="outputs")
 # ── Routers ──────────────────────────────────────────────────────────────────
 app.include_router(image_router, prefix="/api/image", tags=["Image Analysis"])
 app.include_router(fingerprint_router, prefix="/api/fingerprint", tags=["Fingerprint Comparison"])
+app.include_router(signature_router, prefix="/api/signature", tags=["Signature Forgery"])
 
 
 # ── Health ───────────────────────────────────────────────────────────────────

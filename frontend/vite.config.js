@@ -9,12 +9,12 @@ export default defineConfig({
     proxy: {
       // Proxy all /api requests to the FastAPI backend
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
       // Proxy output image files served by FastAPI
       '/outputs': {
-        target: 'http://localhost:8000',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
     },

@@ -27,6 +27,12 @@ export async function analyzeImage(file) {
     )
   }
 
+  if (response.status === 502 || response.status === 503 || response.status === 504) {
+    throw new Error(
+      'Cannot connect to the backend server (HTTP 502). Please ensure the backend server is running on port 8000 (`uvicorn main:app --reload --port 8000`).'
+    )
+  }
+
   // Parse JSON body
   let data
   try {

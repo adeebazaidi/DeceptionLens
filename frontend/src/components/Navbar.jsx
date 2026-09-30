@@ -36,6 +36,12 @@ export default function Navbar() {
         >
           Fingerprint
         </Link>
+        <Link
+          to="/signature"
+          className={`nav-link${location.pathname === '/signature' ? ' active' : ''}`}
+        >
+          Signature
+        </Link>
       </div>
     </nav>
   )

@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
-import { Activity, Search, Waves, Square, FileCode2, BrainCircuit, Microscope, Fingerprint } from 'lucide-react'
+import { Activity, Search, Waves, Square, FileCode2, BrainCircuit, Microscope, Fingerprint, PenTool } from 'lucide-react'
 
 const FEATURES = [
   { icon: <Activity size={18} />, label: 'Entropy Analysis' },
   { icon: <Search size={18} />, label: 'Error Level Analysis' },
   { icon: <Waves size={18} />, label: 'Noise Estimation' },
   { icon: <Fingerprint size={18} />, label: 'Fingerprint Minutiae Matching' },
+  { icon: <PenTool size={18} />, label: 'Signature Forgery Detection' },
   { icon: <Square size={18} />, label: 'Texture (GLCM)' },
   { icon: <FileCode2 size={18} />, label: 'Metadata Extraction' },
   { icon: <BrainCircuit size={18} />, label: 'ML Classification (optional)' },
@@ -23,16 +24,20 @@ export default function Home() {
 
       <p className="hero-tagline">
         Multi-modal forensic analysis suite: Entropy-driven image forgery detection,
-        minutiae-based fingerprint verification, noise estimation, and GLCM texture features.
+        minutiae-based fingerprint verification, signature forgery screening, and GLCM texture features.
       </p>
 
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
         <Link to="/analyze" id="start-analysis-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-          <Microscope size={20} /> Start Image Analysis
+          <Microscope size={20} /> Image Analysis
           <span aria-hidden="true">→</span>
         </Link>
         <Link to="/fingerprint" id="start-fingerprint-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--accent-teal)' }}>
-          <Fingerprint size={20} /> Fingerprint Comparison
+          <Fingerprint size={20} /> Fingerprint
+          <span aria-hidden="true">→</span>
+        </Link>
+        <Link to="/signature" id="start-signature-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+          <PenTool size={20} /> Signature Forgery
           <span aria-hidden="true">→</span>
         </Link>
       </div>
