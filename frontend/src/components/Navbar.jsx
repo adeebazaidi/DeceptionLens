@@ -30,6 +30,12 @@ export default function Navbar() {
         >
           Analyze
         </Link>
+        <Link
+          to="/fingerprint"
+          className={`nav-link${location.pathname === '/fingerprint' ? ' active' : ''}`}
+        >
+          Fingerprint
+        </Link>
       </div>
     </nav>
   )

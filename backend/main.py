@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 load_dotenv()
 
 from api.routes.image_routes import router as image_router
+from api.routes.fingerprint_routes import router as fingerprint_router
 
 # ── App ─────────────────────────────────────────────────────────────────────
 app = FastAPI(
@@ -39,17 +40,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Static output files (generated heatmaps / ELA / noise maps) ──────────────
+# ── Static output files (generated heatmaps / ELA / noise / fingerprint maps) ──────────────
 BASE_DIR = Path(__file__).parent
 OUTPUTS_DIR = BASE_DIR / "outputs"
 OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
-for sub in ("entropy", "ela", "noise"):
+for sub in ("entropy", "ela", "noise", "fingerprint"):
     (OUTPUTS_DIR / sub).mkdir(parents=True, exist_ok=True)
 
 app.mount("/outputs", StaticFiles(directory=str(OUTPUTS_DIR)), name="outputs")
 
 # ── Routers ──────────────────────────────────────────────────────────────────
 app.include_router(image_router, prefix="/api/image", tags=["Image Analysis"])
+app.include_router(fingerprint_router, prefix="/api/fingerprint", tags=["Fingerprint Comparison"])
 
 
 # ── Health ───────────────────────────────────────────────────────────────────

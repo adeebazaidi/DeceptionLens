@@ -38,11 +38,26 @@ Forensics   ML (optional)
 ```
 DeceptionLens/
 ├── backend/
-│   ├── main.py                    # FastAPI app entry point
+│   ├── main.py                     # FastAPI app entry point (image + fingerprint routers)
 │   ├── requirements.txt
-│   ├── .env                       # Configuration
-│   ├── api/routes/image_routes.py # POST /api/image/analyze
-│   ├── modules/
+│   ├── .env                        # Configuration
+│   ├── api/routes/
+│   │   ├── image_routes.py         # POST /api/image/analyze
+│   │   └── fingerprint_routes.py   # POST /api/fingerprint/compare
+│   ├── fingerprint/                # Fingerprint Comparison Package
+│   │   ├── preprocessing.py        # Image decode, grayscale, CLAHE, denoising
+│   │   ├── enhancement.py          # Orientation field, top-hat/black-hat, mask
+│   │   ├── minutiae.py             # Binarization, skeletonization, CN extraction
+│   │   ├── matching.py             # Rigid alignment & tolerance minutiae pairing
+│   │   ├── visualization.py        # Minutiae overlays & comparison correspondence maps
+│   │   └── service.py              # End-to-end pipeline service orchestrator
+│   ├── evaluation/
+│   │   └── evaluate_fingerprint.py # FVC2002 benchmark performance evaluation
+│   ├── datasets/
+│   │   └── fingerprints/
+│   │       ├── README.md           # Dataset setup guide
+│   │       └── fvc2002/            # FVC2002 benchmark dataset placement
+│   ├── modules/                    # Image forgery modules
 │   │   ├── preprocessing.py
 │   │   ├── entropy_analysis.py
 │   │   ├── ela_analysis.py
@@ -54,23 +69,25 @@ DeceptionLens/
 │   ├── ml/
 │   │   ├── train_classifier.py
 │   │   ├── predict.py
-│   │   └── models/               # Model saved here after training
-│   ├── outputs/                  # Generated heatmaps (entropy/ela/noise)
+│   │   └── models/                # Model saved here after training
+│   ├── outputs/                   # Generated artifacts (entropy, ela, noise, fingerprint)
 │   └── tests/
 │       ├── test_entropy.py
 │       ├── test_ela.py
-│       └── test_api.py
+│       ├── test_api.py
+│       └── test_fingerprint.py     # 17 fingerprint unit & API tests
 ├── frontend/
 │   ├── src/
 │   │   ├── pages/Home.jsx
 │   │   ├── pages/ImageAnalysis.jsx
-│   │   ├── components/           # All UI components
-│   │   ├── api/imageApi.js
+│   │   ├── pages/FingerprintComparison.jsx # Fingerprint verification page
+│   │   ├── components/            # UI components (Uploaders, Panels, Results)
+│   │   ├── api/
+│   │   │   ├── imageApi.js
+│   │   │   └── fingerprintApi.js
 │   │   └── styles/app.css
-│   └── vite.config.js            # Dev proxy to backend
-├── dataset/
-│   ├── authentic/                # Place authentic images here for ML training
-│   └── forged/                   # Place forged images here for ML training
+│   └── vite.config.js             # Dev proxy to backend (/api & /outputs)
+├── dataset/                       # Image forgery datasets (authentic/forged)
 └── README.md
 ```
 
@@ -154,6 +171,132 @@ The frontend will be available at: **http://localhost:5173**
   "ml_prediction": { "available": false, "message": "ML model has not been trained yet." }
 }
 ```
+
+---
+
+### `POST /api/fingerprint/compare`
+
+**Content-Type:** `multipart/form-data`
+
+**Fields:**
+- `reference` (or `reference_image`) — Reference exemplar fingerprint image (TIF, PNG, JPG, BMP)
+- `questioned` (or `questioned_image`) — Questioned / query fingerprint impression
+- `threshold` (optional) — Custom match decision threshold percentage (default: `45.0`)
+
+**Max size:** 10 MB per file
+
+**Example response:**
+
+```json
+{
+  "success": true,
+  "result": "Likely Match",
+  "similarity_score": 52.89,
+  "reference_minutiae": 12,
+  "questioned_minutiae": 11,
+  "matched_minutiae": 6,
+  "threshold": 45.0,
+  "processing_time": 0.38,
+  "details": {
+    "reference_endings": 8,
+    "reference_bifurcations": 4,
+    "questioned_endings": 7,
+    "questioned_bifurcations": 4,
+    "alignment": {
+      "base_ref_idx": 0,
+      "base_quest_idx": 0,
+      "rotation_degrees": 3.5,
+      "translation_x": 4.0,
+      "translation_y": -3.0
+    },
+    "matched_count": 6
+  },
+  "visualizations": {
+    "reference_enhanced": "/outputs/fingerprint/a1b2c3_ref_enhanced.png",
+    "reference_skeleton": "/outputs/fingerprint/a1b2c3_ref_skeleton.png",
+    "reference_minutiae": "/outputs/fingerprint/a1b2c3_ref_minutiae.png",
+    "questioned_enhanced": "/outputs/fingerprint/a1b2c3_quest_enhanced.png",
+    "questioned_skeleton": "/outputs/fingerprint/a1b2c3_quest_skeleton.png",
+    "questioned_minutiae": "/outputs/fingerprint/a1b2c3_quest_minutiae.png",
+    "comparison": "/outputs/fingerprint/a1b2c3_comparison.png"
+  }
+}
+```
+
+---
+
+## Fingerprint Verification Pipeline & Viva Guide
+
+### 12 Viva Questions & Concise Explanations
+
+1. **What is a fingerprint ridge?**
+   A fingerprint ridge is a raised friction skin furrow on the epidermis that leaves an impression when pressed against a surface. In digital biometric imaging, ridges appear as darker parallel curves and valleys appear as lighter spacing between them.
+
+2. **Why do we preprocess the image?**
+   Raw optical or capacitive scans contain sensor noise, uneven finger pressure, sweat pores, dust, and non-uniform contrast. Preprocessing converts the image to grayscale, normalizes dimensions while preserving aspect ratio, applies median filtering to eliminate high-frequency noise, and runs CLAHE to equalize ridge contrast across the print.
+
+3. **What is ridge enhancement?**
+   Ridge enhancement sharpens the ridge-valley pattern. DeceptionLens estimates the local ridge orientation field using gradient covariance and applies morphological Top-Hat/Black-Hat filtering combined with unsharp masking. This clarifies blurry or broken ridges while suppressing background sensor artifacts.
+
+4. **What is skeletonization?**
+   Skeletonization (thinning) reduces binary ridge lines of varying thicknesses down to a standardized 1-pixel-wide central axis while preserving topological connectivity. We utilize the Zhang-Suen morphological thinning algorithm from `scikit-image`.
+
+5. **What are minutiae?**
+   Minutiae are local ridge discontinuities and topological anomalies where ridges either terminate or split. In biometric forensics (e.g. Galton characteristics), minutiae provide high discriminative entropy for identity verification.
+
+6. **What is a ridge ending?**
+   A ridge ending is an abrupt termination point where a friction ridge terminates on the finger surface.
+
+7. **What is a bifurcation?**
+   A bifurcation is a point where a single friction ridge splits into two diverging branch ridges.
+
+8. **How are minutiae extracted?**
+   Using the **Rutovitz Crossing Number (CN)** on the 1-pixel skeleton:
+   $$CN = \frac{1}{2}\sum_{i=1}^8 |P_{i+1} - P_i|$$
+   - $CN = 1 \implies$ **Ridge Ending**
+   - $CN = 2 \implies$ Continuous Ridge (internal point)
+   - $CN = 3 \implies$ **Bifurcation**
+   Candidate minutiae near image boundaries or with mutual distances $< 6$ pixels (e.g., broken bridge fragments) are filtered out.
+
+9. **How are two fingerprints compared?**
+   Minutiae sets from the reference and questioned impressions undergo **rigid geometric transformation alignment**:
+   Candidate pairs are evaluated to calculate trial relative rotation ($\Delta\theta$) and translation $(\Delta x, \Delta y)$. The reference minutiae are transformed, and correspondences are counted within spatial ($R \le 18\text{px}$) and angular ($|\Delta\theta| \le 37^\circ$) tolerances using greedy bipartite matching.
+
+10. **How is similarity calculated?**
+    The system computes a balanced normalized score combining the **Sørensen-Dice coefficient** and the **Overlap coefficient**:
+    $$\text{Similarity (\%)} = \left[ 0.70 \cdot \frac{2 \cdot N_{\text{matched}}}{N_{\text{ref}} + N_{\text{quest}}} + 0.30 \cdot \frac{N_{\text{matched}}}{\min(N_{\text{ref}}, N_{\text{quest}})} \right] \times 100$$
+    This produces a deterministic, explainable percentage between 0% and 100%.
+
+11. **How is the threshold selected?**
+    The threshold (default 45.0%) is calibrated using benchmark FVC2002 genuine and impostor distributions to balance False Acceptance Rate (FAR) and False Rejection Rate (FRR). A score $\ge \text{threshold}$ yields **"Likely Match"**; otherwise, **"Likely Non-Match"**.
+
+12. **Why can the system produce false matches or false non-matches?**
+    - **False Non-Match (FRR):** Excessive finger rotation ($> 45^\circ$), partial latent overlaps with $< 5$ shared minutiae, high non-linear skin deformation/stretching, or extreme dryness/moisture.
+    - **False Match (FAR):** Accidental spatial coincidence of small minutiae subsets in high-density prints or noisy false minutiae.
+    *Forensic note: The system serves as an investigative decision aid and not as absolute identification.*
+
+---
+
+## Dataset Benchmark Evaluation (FVC2002 & SOCOFing)
+
+To evaluate the algorithm on the FVC2002 or SOCOFing benchmark datasets:
+
+```bash
+cd backend
+
+# 1. Run on FVC2002 benchmark dataset (80 optical impressions)
+python -m evaluation.evaluate_fingerprint --dataset-dir datasets/fingerprints/fvc2002/DB1_B --threshold 45.0
+
+# 2. Run on SOCOFing benchmark dataset (Real vs Altered: CR, Obl, Zcut)
+python -m evaluation.evaluate_fingerprint --dataset-dir datasets/fingerprints/socofing/sample_pairs --threshold 40.0
+```
+
+Reports:
+- Genuine & Impostor pair counts
+- Average Genuine Similarity vs Average Impostor Similarity
+- False Acceptance Rate (FAR / FMR)
+- False Rejection Rate (FRR / FNMR)
+- Verification Accuracy percentage
 
 ---
 

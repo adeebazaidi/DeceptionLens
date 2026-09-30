@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
-import { Activity, Search, Waves, Square, FileCode2, BrainCircuit, Microscope } from 'lucide-react'
+import { Activity, Search, Waves, Square, FileCode2, BrainCircuit, Microscope, Fingerprint } from 'lucide-react'
 
 const FEATURES = [
   { icon: <Activity size={18} />, label: 'Entropy Analysis' },
   { icon: <Search size={18} />, label: 'Error Level Analysis' },
   { icon: <Waves size={18} />, label: 'Noise Estimation' },
+  { icon: <Fingerprint size={18} />, label: 'Fingerprint Minutiae Matching' },
   { icon: <Square size={18} />, label: 'Texture (GLCM)' },
   { icon: <FileCode2 size={18} />, label: 'Metadata Extraction' },
   { icon: <BrainCircuit size={18} />, label: 'ML Classification (optional)' },
@@ -15,20 +16,26 @@ export default function Home() {
     <main className="home-page" id="home-page">
       <div className="hero-badge">
         <span className="hero-badge-dot" aria-hidden="true" />
-        Research &amp; Educational Tool
+        Forensic Biometric &amp; Image Screening Suite
       </div>
 
       <h1 className="hero-title">DeceptionLens</h1>
 
       <p className="hero-tagline">
-        Entropy-driven forensic image screening using ELA, noise analysis,
-        GLCM texture features, and Shannon entropy.
+        Multi-modal forensic analysis suite: Entropy-driven image forgery detection,
+        minutiae-based fingerprint verification, noise estimation, and GLCM texture features.
       </p>
 
-      <Link to="/analyze" id="start-analysis-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-        <Microscope size={20} /> Start Image Analysis
-        <span aria-hidden="true">→</span>
-      </Link>
+      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <Link to="/analyze" id="start-analysis-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+          <Microscope size={20} /> Start Image Analysis
+          <span aria-hidden="true">→</span>
+        </Link>
+        <Link to="/fingerprint" id="start-fingerprint-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--accent-teal)' }}>
+          <Fingerprint size={20} /> Fingerprint Comparison
+          <span aria-hidden="true">→</span>
+        </Link>
+      </div>
 
       <div className="hero-features" role="list" aria-label="Analysis features">
         {FEATURES.map(({ icon, label }) => (
