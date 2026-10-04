@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Search, AlertTriangle } from 'lucide-react'
+import { AlertTriangle } from 'lucide-react'
 
 export default function Navbar() {
   const location = useLocation()
@@ -7,10 +7,10 @@ export default function Navbar() {
   return (
     <nav className="navbar" role="navigation" aria-label="Main navigation">
       <Link to="/" className="navbar-brand" aria-label="DeceptionLens home">
-        <div className="navbar-logo-icon" aria-hidden="true"><Search size={24} /></div>
+        <div className="navbar-logo-icon" aria-hidden="true"><img src="/logo.png" alt="Logo" style={{ width: '28px', height: '28px', borderRadius: '6px' }} /></div>
         <div>
           <div className="navbar-title">DeceptionLens</div>
-          <div className="navbar-subtitle">Forensic Image Analysis</div>
+          <div className="navbar-subtitle">Forensic Analysis</div>
         </div>
       </Link>
 
@@ -28,7 +28,7 @@ export default function Navbar() {
           to="/analyze"
           className={`nav-link${location.pathname === '/analyze' ? ' active' : ''}`}
         >
-          Analyze
+          Image Analysis
         </Link>
         <Link
           to="/fingerprint"

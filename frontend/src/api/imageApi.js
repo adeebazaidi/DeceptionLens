@@ -23,7 +23,7 @@ export async function analyzeImage(file) {
     })
   } catch (networkError) {
     throw new Error(
-      'Cannot reach the analysis server. Please ensure the backend is running on port 8000.'
+      networkError.message || 'Cannot reach the analysis server. Please ensure the backend is running on port 8000.'
     )
   }
 

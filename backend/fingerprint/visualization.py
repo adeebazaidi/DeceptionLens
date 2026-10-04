@@ -8,7 +8,7 @@ Generates professional forensic evidence artifacts:
    and minutiae correspondence lines.
 """
 
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any
 import math
 import os
 from pathlib import Path
@@ -181,7 +181,7 @@ def render_comparison_canvas(
     # Pill dimensions
     bbox = font_pill.getbbox(badge_text)
     tw = bbox[2] - bbox[0]
-    th = bbox[3] - bbox[1]
+    bbox[3] - bbox[1]
 
     pill_w = tw + 36
     pill_h = 30

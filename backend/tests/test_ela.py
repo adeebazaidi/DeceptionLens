@@ -2,7 +2,6 @@
 Tests — ELA Analysis
 """
 
-import io
 import os
 import sys
 import tempfile

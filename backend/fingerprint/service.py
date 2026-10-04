@@ -6,7 +6,7 @@ loading, preprocessing, ridge enhancement, skeletonization,
 minutiae extraction, geometric matching, and visualization rendering.
 """
 
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 import time
 import uuid
 from pathlib import Path

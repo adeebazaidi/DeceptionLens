@@ -53,10 +53,6 @@ DeceptionLens/
 │   │   └── service.py              # End-to-end pipeline service orchestrator
 │   ├── evaluation/
 │   │   └── evaluate_fingerprint.py # FVC2002 benchmark performance evaluation
-│   ├── datasets/
-│   │   └── fingerprints/
-│   │       ├── README.md           # Dataset setup guide
-│   │       └── fvc2002/            # FVC2002 benchmark dataset placement
 │   ├── modules/                    # Image forgery modules
 │   │   ├── preprocessing.py
 │   │   ├── entropy_analysis.py
@@ -87,7 +83,10 @@ DeceptionLens/
 │   │   │   └── fingerprintApi.js
 │   │   └── styles/app.css
 │   └── vite.config.js             # Dev proxy to backend (/api & /outputs)
-├── dataset/                       # Image forgery datasets (authentic/forged)
+├── dataset/                       
+│   ├── authentic/                 # Unmanipulated images
+│   ├── forged/                    # Manipulated images
+│   └── fingerprints/              # FVC2002/SOCOFing benchmark datasets
 └── README.md
 ```
 
@@ -114,6 +113,7 @@ pip install -r requirements.txt
 
 # 3. Start the server
 uvicorn main:app --reload --port 8000
+# (Alternatively, you can simply run: python main.py)
 ```
 
 The backend will be available at:
@@ -285,10 +285,10 @@ To evaluate the algorithm on the FVC2002 or SOCOFing benchmark datasets:
 cd backend
 
 # 1. Run on FVC2002 benchmark dataset (80 optical impressions)
-python -m evaluation.evaluate_fingerprint --dataset-dir datasets/fingerprints/fvc2002/DB1_B --threshold 45.0
+python -m evaluation.evaluate_fingerprint --dataset-dir ../dataset/fingerprints/fvc2002/sample_pairs --threshold 45.0
 
 # 2. Run on SOCOFing benchmark dataset (Real vs Altered: CR, Obl, Zcut)
-python -m evaluation.evaluate_fingerprint --dataset-dir datasets/fingerprints/socofing/sample_pairs --threshold 40.0
+python -m evaluation.evaluate_fingerprint --dataset-dir ../dataset/fingerprints/socofing/sample_pairs --threshold 40.0
 ```
 
 Reports:

@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar.jsx'
 import Home from './pages/Home.jsx'
+import Footer from './components/Footer.jsx'
 import ImageAnalysis from './pages/ImageAnalysis.jsx'
 import FingerprintComparison from './pages/FingerprintComparison.jsx'
 import SignatureAnalysis from './pages/SignatureAnalysis.jsx'
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/fingerprint" element={<FingerprintComparison />} />
         <Route path="/signature" element={<SignatureAnalysis />} />
       </Routes>
+      <Footer />
     </div>
   )
 }

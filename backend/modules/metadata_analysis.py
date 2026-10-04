@@ -9,7 +9,7 @@ many legitimate images lack EXIF data.
 """
 
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from PIL import Image
 from PIL.ExifTags import TAGS

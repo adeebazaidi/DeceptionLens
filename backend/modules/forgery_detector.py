@@ -13,7 +13,7 @@ Language uses "potentially suspicious" — never "forged" or "manipulated".
 """
 
 import os
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 # ── Configurable thresholds ───────────────────────────────────────────────────
 # These can be overridden via environment variables.

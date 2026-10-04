@@ -12,11 +12,7 @@ import MetadataPanel from '../components/MetadataPanel.jsx'
 import ResultCard from '../components/ResultCard.jsx'
 import { UploadCloud } from 'lucide-react'
 
-function formatBytes(b) {
-  if (!b) return '—'
-  if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} KB`
-  return `${(b / (1024 * 1024)).toFixed(2)} MB`
-}
+
 
 export default function ImageAnalysis() {
   const [file, setFile] = useState(null)

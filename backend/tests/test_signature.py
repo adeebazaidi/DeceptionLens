@@ -5,7 +5,7 @@ Unit Tests for Signature Analysis Module & API Route
 
 import io
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 from fastapi.testclient import TestClient
 
 from main import app
@@ -15,7 +15,6 @@ from modules.signature_analysis import (
     detect_stroke_tremor,
     compute_signature_features,
     compare_signatures,
-    analyze_signature_pipeline,
 )
 
 client = TestClient(app)

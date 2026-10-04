@@ -5,7 +5,6 @@ Tests preprocessing, enhancement, minutiae extraction, matching,
 and the FastAPI /api/fingerprint/compare endpoint.
 """
 
-import io
 from pathlib import Path
 import cv2
 import numpy as np
@@ -19,10 +18,8 @@ from fingerprint.preprocessing import (
     resize_preserve_aspect,
     preprocess_fingerprint,
 )
-from fingerprint.enhancement import compute_foreground_mask, enhance_ridges
+from fingerprint.enhancement import enhance_ridges
 from fingerprint.minutiae import (
-    binarize_fingerprint,
-    skeletonize_fingerprint,
     compute_crossing_number,
     extract_fingerprint_minutiae,
     TYPE_ENDING,
@@ -33,7 +30,7 @@ from fingerprint.service import compare_fingerprints
 
 client = TestClient(app)
 
-SAMPLE_DIR = Path(__file__).parent.parent / "datasets" / "fingerprints" / "fvc2002" / "sample_pairs"
+SAMPLE_DIR = Path(__file__).parent.parent.parent / "dataset" / "fingerprints" / "fvc2002" / "sample_pairs"
 SAMPLE_101_1 = str(SAMPLE_DIR / "101_1.png")
 SAMPLE_101_2 = str(SAMPLE_DIR / "101_2.png")
 SAMPLE_102_1 = str(SAMPLE_DIR / "102_1.png")
@@ -188,7 +185,7 @@ class TestFingerprintAPI:
         assert "questioned_minutiae" in data["visualizations"]
 
     def test_api_successful_socofing_comparison(self):
-        socofing_dir = Path(__file__).parent.parent / "datasets" / "fingerprints" / "socofing" / "sample_pairs"
+        socofing_dir = Path(__file__).parent.parent.parent / "dataset" / "fingerprints" / "socofing" / "sample_pairs"
         ref_path = socofing_dir / "1__M_Left_index_finger.BMP"
         quest_path = socofing_dir / "1__M_Left_index_finger_CR.BMP"
 

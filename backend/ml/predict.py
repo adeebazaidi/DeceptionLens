@@ -74,7 +74,7 @@ def predict(
         }
 
     try:
-        from modules.feature_extraction import stats_to_features, features_to_vector
+        from modules.feature_extraction import stats_to_features
 
         feature_names = _load_feature_names()
         features = stats_to_features(entropy_stats, ela_stats, noise_stats, texture_stats)

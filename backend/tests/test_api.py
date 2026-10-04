@@ -5,13 +5,10 @@ Integration tests for POST /api/image/analyze.
 """
 
 import io
-import os
 import sys
-import tempfile
 from pathlib import Path
 
 import numpy as np
-import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
 

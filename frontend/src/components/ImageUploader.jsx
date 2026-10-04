@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
 import { ImagePlus, FolderSearch, Loader, Microscope, AlertTriangle, X } from 'lucide-react'
 
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 const ALLOWED_EXTS = ['.jpg', '.jpeg', '.png', '.webp']
 const MAX_SIZE_MB = 10
 

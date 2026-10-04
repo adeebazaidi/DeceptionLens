@@ -1,16 +1,10 @@
 import { useState } from 'react'
 import {
-  Fingerprint,
   GitCompare,
   CheckCircle2,
   XCircle,
-  AlertTriangle,
   Layers,
-  Sparkles,
-  Info,
-  Clock,
-  Target,
-  ArrowRight,
+  Clock
 } from 'lucide-react'
 import FingerprintUploader from '../components/FingerprintUploader.jsx'
 import Loading from '../components/Loading.jsx'

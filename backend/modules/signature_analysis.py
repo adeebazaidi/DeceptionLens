@@ -14,9 +14,8 @@ Provides forensic evaluation of handwritten signatures:
      - Color-Coded Difference Overlay Heatmap
 """
 
-import os
 from pathlib import Path
-from typing import Dict, Optional, Tuple, List
+from typing import Dict, Optional, Tuple
 
 import cv2
 import numpy as np

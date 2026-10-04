@@ -145,7 +145,7 @@ async def get_sample_fingerprint(dataset: str, filename: str):
     safe_filename = Path(filename).name
     sample_path = (
         Path(__file__).resolve().parent.parent.parent
-        / "datasets"
+        / "dataset"
         / "fingerprints"
         / dataset
         / "sample_pairs"

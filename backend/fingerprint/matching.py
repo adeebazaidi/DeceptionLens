@@ -6,7 +6,7 @@ spatial and angular tolerance pairing, similarity score computation,
 and forensic verification decision.
 """
 
-from typing import List, Dict, Any, Tuple, Optional
+from typing import List, Dict, Any, Optional
 import math
 import os
 import numpy as np

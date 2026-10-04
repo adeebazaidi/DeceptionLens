@@ -11,7 +11,7 @@ constitute proof of image manipulation.
 """
 
 import os
-from typing import Dict, Tuple
+from typing import Dict
 
 import cv2
 import numpy as np

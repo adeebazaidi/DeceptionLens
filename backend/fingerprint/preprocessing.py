@@ -5,7 +5,7 @@ Handles image decoding, grayscale conversion, aspect-preserving dimension
 normalization, noise reduction, and contrast enhancement.
 """
 
-from typing import Tuple, Dict, Any, Optional
+from typing import Tuple, Dict, Any
 import cv2
 import numpy as np
 
