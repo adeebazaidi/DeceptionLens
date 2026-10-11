@@ -14,13 +14,13 @@ from typing import Optional
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
-from modules.preprocessing import get_image_info, load_image, validate_image
-from modules.entropy_analysis import compute_entropy_stats, generate_entropy_heatmap
-from modules.ela_analysis import compute_ela_stats, perform_ela, save_ela_image
-from modules.noise_analysis import compute_noise_stats, estimate_noise_map, save_noise_map
-from modules.texture_analysis import compute_glcm_features
-from modules.metadata_analysis import extract_metadata
-from modules.forgery_detector import assess_risk
+from modules.image.preprocessing import get_image_info, load_image, validate_image
+from modules.image.entropy_analysis import compute_entropy_stats, generate_entropy_heatmap
+from modules.image.ela_analysis import compute_ela_stats, perform_ela, save_ela_image
+from modules.image.noise_analysis import compute_noise_stats, estimate_noise_map, save_noise_map
+from modules.image.texture_analysis import compute_glcm_features
+from modules.image.metadata_analysis import extract_metadata
+from modules.image.forgery_detector import assess_risk
 from ml.predict import load_model, predict
 
 router = APIRouter()

@@ -6,6 +6,8 @@ import ImageAnalysis from './pages/ImageAnalysis.jsx'
 import FingerprintComparison from './pages/FingerprintComparison.jsx'
 import SignatureAnalysis from './pages/SignatureAnalysis.jsx'
 
+import DocumentAnalysis from './pages/DocumentAnalysis.jsx'
+
 export default function App() {
   return (
     <div className="app-root">
@@ -15,6 +17,7 @@ export default function App() {
         <Route path="/analyze" element={<ImageAnalysis />} />
         <Route path="/fingerprint" element={<FingerprintComparison />} />
         <Route path="/signature" element={<SignatureAnalysis />} />
+        <Route path="/document" element={<DocumentAnalysis />} />
       </Routes>
       <Footer />
     </div>

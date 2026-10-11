@@ -40,7 +40,16 @@ export default function SignatureAnalysis() {
 
       {loading && (
         <div className="card section-spacer">
-          <Loading message="Extracting signature skeleton, tremor metrics, and performing forensic comparison..." />
+          <Loading 
+            message="Analyzing signature..." 
+            steps={[
+              { id: 'prep',       label: 'Preprocessing signature image' },
+              { id: 'skeleton',   label: 'Extracting signature skeleton' },
+              { id: 'tremor',     label: 'Analyzing tremor metrics' },
+              { id: 'compare',    label: 'Performing forensic comparison' },
+            ]}
+            durations={[600, 800, 800, 500]}
+          />
         </div>
       )}
 

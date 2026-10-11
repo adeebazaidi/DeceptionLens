@@ -12,11 +12,11 @@ from typing import Dict, List
 
 import numpy as np
 
-from modules.entropy_analysis import compute_entropy_stats
-from modules.ela_analysis import perform_ela, compute_ela_stats
-from modules.noise_analysis import estimate_noise_map, compute_noise_stats
-from modules.texture_analysis import compute_glcm_features
-from modules.preprocessing import load_image
+from modules.image.entropy_analysis import compute_entropy_stats
+from modules.image.ela_analysis import perform_ela, compute_ela_stats
+from modules.image.noise_analysis import estimate_noise_map, compute_noise_stats
+from modules.image.texture_analysis import compute_glcm_features
+from modules.image.preprocessing import load_image
 
 # Canonical feature order — must not change after model training
 FEATURE_NAMES: List[str] = [

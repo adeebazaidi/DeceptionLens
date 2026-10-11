@@ -21,8 +21,8 @@ BACKEND_DIR = Path(__file__).resolve().parent.parent
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from fingerprint.service import compare_fingerprints
-from fingerprint.matching import DEFAULT_MATCH_THRESHOLD
+from modules.fingerprint.service import compare_fingerprints
+from modules.fingerprint.matching import DEFAULT_MATCH_THRESHOLD
 
 
 def discover_fingerprint_images(dataset_path: Path) -> Dict[str, List[Path]]:

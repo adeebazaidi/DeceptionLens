@@ -25,14 +25,10 @@ export default function FingerprintUploader({
   const inputRef = useRef(null)
 
   useEffect(() => {
-    if (!file) {
-      setPreviewUrl(null)
-      return
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
     }
-    const url = URL.createObjectURL(file)
-    setPreviewUrl(url)
-    return () => URL.revokeObjectURL(url)
-  }, [file])
+  }, [previewUrl])
 
   function validateFile(f) {
     const ext = '.' + f.name.split('.').pop().toLowerCase()
@@ -53,6 +49,8 @@ export default function FingerprintUploader({
       return
     }
     setError('')
+    if (previewUrl) URL.revokeObjectURL(previewUrl)
+    setPreviewUrl(URL.createObjectURL(f))
     onFileSelect(f)
   }
 
@@ -73,6 +71,8 @@ export default function FingerprintUploader({
   function handleRemove(e) {
     e.stopPropagation()
     setError('')
+    if (previewUrl) URL.revokeObjectURL(previewUrl)
+    setPreviewUrl(null)
     onFileSelect(null)
   }
 

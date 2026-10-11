@@ -18,6 +18,7 @@ load_dotenv()
 from api.routes.image_routes import router as image_router
 from api.routes.fingerprint_routes import router as fingerprint_router
 from api.routes.signature_routes import router as signature_router
+from api.routes.document_routes import router as document_router
 
 # ── App ─────────────────────────────────────────────────────────────────────
 app = FastAPI(
@@ -54,6 +55,7 @@ app.mount("/outputs", StaticFiles(directory=str(OUTPUTS_DIR)), name="outputs")
 app.include_router(image_router, prefix="/api/image", tags=["Image Analysis"])
 app.include_router(fingerprint_router, prefix="/api/fingerprint", tags=["Fingerprint Comparison"])
 app.include_router(signature_router, prefix="/api/signature", tags=["Signature Forgery"])
+app.include_router(document_router, prefix="/api/document", tags=["Document Analysis"])
 
 
 # ── Health ───────────────────────────────────────────────────────────────────

@@ -143,10 +143,17 @@ export default function FingerprintComparison() {
       {/* Loading state */}
       {isComparing && (
         <div className="card section-spacer">
-          <Loading />
-          <div style={{ textAlign: 'center', marginTop: '1rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            Extracting ridge flow, skeletonizing ridges, and computing minutiae alignment...
-          </div>
+          <Loading 
+            message="Comparing fingerprints..." 
+            steps={[
+              { id: 'prep',       label: 'Preprocessing impressions' },
+              { id: 'enhance',    label: 'Enhancing ridge lines' },
+              { id: 'minutiae',   label: 'Extracting minutiae points' },
+              { id: 'align',      label: 'Aligning topologies' },
+              { id: 'score',      label: 'Calculating similarity score' },
+            ]}
+            durations={[600, 800, 800, 1000, 400]}
+          />
         </div>
       )}
 

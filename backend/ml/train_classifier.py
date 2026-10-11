@@ -41,7 +41,7 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import train_test_split
 
-from modules.feature_extraction import FEATURE_NAMES, extract_all_features
+from modules.image.feature_extraction import FEATURE_NAMES, extract_all_features
 
 SUPPORTED = {".jpg", ".jpeg", ".png", ".webp"}
 MODELS_DIR = Path(__file__).parent / "models"

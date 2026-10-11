@@ -12,21 +12,21 @@ import pytest
 from fastapi.testclient import TestClient
 
 from main import app
-from fingerprint.preprocessing import (
+from modules.fingerprint.preprocessing import (
     decode_image_bytes,
     to_grayscale,
     resize_preserve_aspect,
     preprocess_fingerprint,
 )
-from fingerprint.enhancement import enhance_ridges
-from fingerprint.minutiae import (
+from modules.fingerprint.enhancement import enhance_ridges
+from modules.fingerprint.minutiae import (
     compute_crossing_number,
     extract_fingerprint_minutiae,
     TYPE_ENDING,
     TYPE_BIFURCATION,
 )
-from fingerprint.matching import match_minutiae_sets
-from fingerprint.service import compare_fingerprints
+from modules.fingerprint.matching import match_minutiae_sets
+from modules.fingerprint.service import compare_fingerprints
 
 client = TestClient(app)
 

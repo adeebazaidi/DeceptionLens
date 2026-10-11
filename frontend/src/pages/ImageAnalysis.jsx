@@ -90,7 +90,18 @@ export default function ImageAnalysis() {
       {/* Loading */}
       {isAnalyzing && (
         <div className="card section-spacer">
-          <Loading />
+          <Loading 
+            message="Analyzing Image..." 
+            steps={[
+              { id: 'preprocessing', label: 'Preprocessing image' },
+              { id: 'entropy',       label: 'Entropy analysis' },
+              { id: 'ela',           label: 'ELA analysis' },
+              { id: 'noise',         label: 'Noise analysis' },
+              { id: 'texture',       label: 'Texture analysis' },
+              { id: 'result',        label: 'Preparing result' },
+            ]}
+            durations={[600, 900, 900, 700, 700, 400]}
+          />
         </div>
       )}
 

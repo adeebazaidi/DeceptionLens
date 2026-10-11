@@ -38,7 +38,7 @@ def _load_feature_names():
         with open(FEATURE_NAMES_PATH) as f:
             return json.load(f)
     # Fallback to module default
-    from modules.feature_extraction import FEATURE_NAMES
+    from modules.image.feature_extraction import FEATURE_NAMES
     return FEATURE_NAMES
 
 
@@ -74,7 +74,7 @@ def predict(
         }
 
     try:
-        from modules.feature_extraction import stats_to_features
+        from modules.image.feature_extraction import stats_to_features
 
         feature_names = _load_feature_names()
         features = stats_to_features(entropy_stats, ela_stats, noise_stats, texture_stats)

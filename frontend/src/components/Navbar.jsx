@@ -42,6 +42,12 @@ export default function Navbar() {
         >
           Signature
         </Link>
+        <Link
+          to="/document"
+          className={`nav-link${location.pathname === '/document' ? ' active' : ''}`}
+        >
+          Document
+        </Link>
       </div>
     </nav>
   )

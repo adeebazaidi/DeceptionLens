@@ -11,8 +11,8 @@ from typing import Optional
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 
-from fingerprint.service import compare_fingerprints
-from fingerprint.matching import DEFAULT_MATCH_THRESHOLD
+from modules.fingerprint.service import compare_fingerprints
+from modules.fingerprint.matching import DEFAULT_MATCH_THRESHOLD
 
 router = APIRouter()
 

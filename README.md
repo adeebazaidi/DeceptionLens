@@ -38,55 +38,80 @@ Forensics   ML (optional)
 ```
 DeceptionLens/
 ├── backend/
-│   ├── main.py                     # FastAPI app entry point (image + fingerprint routers)
-│   ├── requirements.txt
-│   ├── .env                        # Configuration
+│   ├── main.py                     # FastAPI app entry point (all forensic routers)
+│   ├── requirements.txt            # Python dependencies (FastAPI, PyTorch/EasyOCR, spaCy, scikit-image)
+│   ├── .env                        # Configuration (CORS, upload size limits)
 │   ├── api/routes/
 │   │   ├── image_routes.py         # POST /api/image/analyze
-│   │   └── fingerprint_routes.py   # POST /api/fingerprint/compare
-│   ├── fingerprint/                # Fingerprint Comparison Package
-│   │   ├── preprocessing.py        # Image decode, grayscale, CLAHE, denoising
-│   │   ├── enhancement.py          # Orientation field, top-hat/black-hat, mask
-│   │   ├── minutiae.py             # Binarization, skeletonization, CN extraction
-│   │   ├── matching.py             # Rigid alignment & tolerance minutiae pairing
-│   │   ├── visualization.py        # Minutiae overlays & comparison correspondence maps
-│   │   └── service.py              # End-to-end pipeline service orchestrator
+│   │   ├── fingerprint_routes.py   # POST /api/fingerprint/compare
+│   │   ├── signature_routes.py     # POST /api/signature/analyze
+│   │   └── document_routes.py      # POST /api/document/analyze
 │   ├── evaluation/
-│   │   └── evaluate_fingerprint.py # FVC2002 benchmark performance evaluation
-│   ├── modules/                    # Image forgery modules
-│   │   ├── preprocessing.py
-│   │   ├── entropy_analysis.py
-│   │   ├── ela_analysis.py
-│   │   ├── noise_analysis.py
-│   │   ├── texture_analysis.py
-│   │   ├── metadata_analysis.py
-│   │   ├── feature_extraction.py
-│   │   └── forgery_detector.py
+│   │   └── evaluate_fingerprint.py # FVC2002/SOCOFing benchmark performance evaluation
+│   ├── modules/                    # Forensic Analysis Modules
+│   │   ├── __init__.py             # Master package exports & backward-compatibility aliases
+│   │   ├── image/                  # Image Forgery Detection Module
+│   │   │   ├── __init__.py
+│   │   │   ├── preprocessing.py    # Image decode & validation
+│   │   │   ├── entropy_analysis.py # Shannon entropy & block variation heatmaps
+│   │   │   ├── ela_analysis.py     # Error Level Analysis re-compression difference
+│   │   │   ├── noise_analysis.py   # High-frequency noise residuals
+│   │   │   ├── texture_analysis.py # GLCM second-order texture descriptors
+│   │   │   ├── metadata_analysis.py# EXIF/TIFF metadata & software artifact extraction
+│   │   │   ├── feature_extraction.py # 17-dimensional canonical feature vector for ML
+│   │   │   ├── forgery_detector.py # Rule-based multi-factor heuristic risk scoring
+│   │   │   └── advanced_analysis.py# Laplacian blur variance, copy-move detection
+│   │   ├── signature/              # Handwritten Signature Analysis Module
+│   │   │   ├── __init__.py
+│   │   │   └── signature_analysis.py # Stroke tremor, skeletonization & 1-vs-1 verification
+│   │   ├── fingerprint/            # Biometric Fingerprint Comparison Module
+│   │   │   ├── __init__.py
+│   │   │   ├── preprocessing.py    # Image decode, grayscale, CLAHE, denoising
+│   │   │   ├── enhancement.py      # Orientation field, top-hat/black-hat, mask
+│   │   │   ├── minutiae.py         # Binarization, skeletonization, CN extraction
+│   │   │   ├── matching.py         # Rigid alignment & tolerance minutiae pairing
+│   │   │   ├── visualization.py    # Minutiae overlays & comparison correspondence maps
+│   │   │   └── service.py          # End-to-end pipeline service orchestrator
+│   │   └── document_analysis/      # Forensic Document Analysis Module
+│   │       ├── __init__.py         # Subpackage exports
+│   │       ├── analyzer.py         # Document pipeline orchestrator
+│   │       ├── ocr_service.py      # PyMuPDF rasterization & EasyOCR engine
+│   │       ├── nlp_service.py      # spaCy NER & forensic regex extraction
+│   │       ├── normalization.py    # Date, name, location, and money normalizers
+│   │       └── consistency_checker.py # Cross-field conflict & contradiction detector
 │   ├── ml/
 │   │   ├── train_classifier.py
 │   │   ├── predict.py
-│   │   └── models/                # Model saved here after training
-│   ├── outputs/                   # Generated artifacts (entropy, ela, noise, fingerprint)
-│   └── tests/
+│   │   └── models/                # Trained Random Forest model artifacts
+│   ├── outputs/                   # Generated artifacts (entropy, ela, noise, fingerprint, signature)
+│   └── tests/                     # 61 Automated Pytest Unit & Integration Tests
 │       ├── test_entropy.py
 │       ├── test_ela.py
-│       ├── test_api.py
-│       └── test_fingerprint.py     # 17 fingerprint unit & API tests
+│       ├── test_fingerprint.py
+│       ├── test_signature.py
+│       ├── test_consistency.py
+│       └── test_api.py
 ├── frontend/
 │   ├── src/
-│   │   ├── pages/Home.jsx
-│   │   ├── pages/ImageAnalysis.jsx
-│   │   ├── pages/FingerprintComparison.jsx # Fingerprint verification page
-│   │   ├── components/            # UI components (Uploaders, Panels, Results)
+│   │   ├── pages/
+│   │   │   ├── Home.jsx                    # Landing page & forensic suites showcase
+│   │   │   ├── ImageAnalysis.jsx           # Forensic image forgery dashboard
+│   │   │   ├── FingerprintComparison.jsx   # Biometric fingerprint verification page
+│   │   │   ├── SignatureAnalysis.jsx       # Handwritten signature analysis page
+│   │   │   └── DocumentAnalysis.jsx        # Multi-page document OCR & consistency page
+│   │   ├── components/                     # Reusable UI components & uploaders
 │   │   ├── api/
 │   │   │   ├── imageApi.js
-│   │   │   └── fingerprintApi.js
+│   │   │   ├── fingerprintApi.js
+│   │   │   ├── signatureApi.js
+│   │   │   └── documentApi.js
 │   │   └── styles/app.css
 │   └── vite.config.js             # Dev proxy to backend (/api & /outputs)
 ├── dataset/                       
 │   ├── authentic/                 # Unmanipulated images
 │   ├── forged/                    # Manipulated images
 │   └── fingerprints/              # FVC2002/SOCOFing benchmark datasets
+├── COLAB_TRAINING_GUIDE.md        # Cloud ML model training guide
 └── README.md
 ```
 
@@ -144,6 +169,63 @@ The frontend will be available at: **http://localhost:5173**
 ## API Endpoint
 
 ### `POST /api/image/analyze`
+[Content remains same]
+
+---
+
+### `POST /api/document/analyze`
+
+**Content-Type:** `multipart/form-data`
+
+**Field:** `file` — document file (PDF, JPG, JPEG, PNG, TIFF)
+
+**Max size:** 20 MB
+
+**Example response:**
+
+```json
+{
+  "document": {
+    "filename": "statement.pdf",
+    "type": "pdf",
+    "page_count": 2
+  },
+  "pages": [...],
+  "text": {
+    "raw": "...",
+    "cleaned": "..."
+  },
+  "entities": {
+    "persons": [{"value": "Rahul Sharma", "type": "PERSON", "page": 1, "source_text": "...Rahul Sharma..."}],
+    "dates": [{"value": "12/08/2026", "type": "DATE", "page": 1, "source_text": "...on 12/08/2026..."}],
+    "locations": [],
+    "organizations": [],
+    "money": []
+  },
+  "case_information": {
+    "case_numbers": [{"value": "FIR-1234", "page": 1, "source_text": "..."}],
+    "keywords": [{"value": "accused", "page": 2, "source_text": "..."}]
+  },
+  "consistency_analysis": {
+    "status": "Potential inconsistency",
+    "issues": [
+      {
+        "type": "DATE_INCONSISTENCY",
+        "title": "Potential date inconsistency",
+        "reason": "Multiple distinct dates were found in the document.",
+        "evidence": [
+          {"value": "12/08/2026", "page": 1},
+          {"value": "15/08/2026", "page": 2}
+        ]
+      }
+    ]
+  }
+}
+```
+
+---
+
+### `POST /api/fingerprint/compare`
 
 **Content-Type:** `multipart/form-data`
 
@@ -222,6 +304,19 @@ The frontend will be available at: **http://localhost:5173**
   }
 }
 ```
+
+---
+
+## Document Analysis Pipeline
+
+**Purpose:** Extract and analyze information from forensic documents and identify potential internal inconsistencies.
+
+**Technology:** EasyOCR, spaCy, Python, Regex/pattern matching, Rule-based consistency analysis, React frontend, FastAPI backend.
+
+The module performs:
+Document → OCR → Text Cleaning → Entity Extraction → Information Normalization → Consistency Analysis → Structured Report
+
+This module handles forensic document evaluation. It provides extracted text mapping, context-preserved NLP entity extraction, and intelligent rule-based mismatch detection across pages (e.g., date contradictions).
 
 ---
 

@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw
 from fastapi.testclient import TestClient
 
 from main import app
-from modules.signature_analysis import (
+from modules.signature.signature_analysis import (
     binarize_and_crop_signature,
     compute_skeleton,
     detect_stroke_tremor,

@@ -1,53 +1,52 @@
 import { useEffect, useState } from 'react'
 
-const STEPS = [
-  { id: 'preprocessing', label: 'Preprocessing image' },
-  { id: 'entropy',       label: 'Entropy analysis' },
-  { id: 'ela',           label: 'ELA analysis' },
-  { id: 'noise',         label: 'Noise analysis' },
-  { id: 'texture',       label: 'Texture analysis' },
-  { id: 'result',        label: 'Preparing result' },
-]
-
-const STEP_DURATIONS = [600, 900, 900, 700, 700, 400]
-
-export default function Loading() {
+export default function Loading({ 
+  message = "Analyzing...", 
+  steps = null, 
+  durations = null 
+}) {
   const [currentStep, setCurrentStep] = useState(0)
 
   useEffect(() => {
+    if (!steps || steps.length === 0) return;
+    
     let step = 0
+    const stepDurations = durations || Array(steps.length).fill(800);
+    
     function advance() {
       step += 1
-      if (step < STEPS.length) {
+      if (step < steps.length) {
         setCurrentStep(step)
-        setTimeout(advance, STEP_DURATIONS[step])
+        setTimeout(advance, stepDurations[step] || 800)
       }
     }
-    const timer = setTimeout(advance, STEP_DURATIONS[0])
+    const timer = setTimeout(advance, stepDurations[0] || 800)
     return () => clearTimeout(timer)
-  }, [])
+  }, [steps, durations])
 
   return (
     <div className="loading-wrapper" role="status" aria-live="polite">
       <div className="loading-spinner" aria-hidden="true" />
-      <div className="loading-title">Analyzing image…</div>
-      <div className="loading-steps">
-        {STEPS.map((step, idx) => {
-          const isDone   = idx < currentStep
-          const isActive = idx === currentStep
-          return (
-            <div
-              key={step.id}
-              className={`loading-step${isDone ? ' done' : isActive ? ' active' : ''}`}
-            >
-              <div className={`step-icon${isDone ? ' done' : isActive ? ' active' : ''}`}>
-                {isDone && <span style={{ fontSize: '0.6rem', color: '#fff' }}>✓</span>}
+      <div className="loading-title">{message}</div>
+      {steps && steps.length > 0 && (
+        <div className="loading-steps">
+          {steps.map((step, idx) => {
+            const isDone   = idx < currentStep
+            const isActive = idx === currentStep
+            return (
+              <div
+                key={step.id || idx}
+                className={`loading-step${isDone ? ' done' : isActive ? ' active' : ''}`}
+              >
+                <div className={`step-icon${isDone ? ' done' : isActive ? ' active' : ''}`}>
+                  {isDone && <span style={{ fontSize: '0.6rem', color: '#fff' }}>✓</span>}
+                </div>
+                {step.label}
               </div>
-              {step.label}
-            </div>
-          )
-        })}
-      </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

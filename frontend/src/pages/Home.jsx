@@ -59,12 +59,16 @@ export default function Home() {
           <Microscope size={20} /> Image Analysis
           <span aria-hidden="true">→</span>
         </Link>
-        <Link to="/fingerprint" id="start-fingerprint-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--accent-teal)' }}>
+        <Link to="/fingerprint" id="start-fingerprint-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
           <Fingerprint size={20} /> Fingerprint
           <span aria-hidden="true">→</span>
         </Link>
         <Link to="/signature" id="start-signature-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
           <PenTool size={20} /> Signature Forgery
+          <span aria-hidden="true">→</span>
+        </Link>
+        <Link to="/document" id="start-document-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+          <FileBadge size={20} /> Document Analysis
           <span aria-hidden="true">→</span>
         </Link>
       </div>

@@ -14,8 +14,8 @@ from typing import Optional
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
-from modules.preprocessing import validate_image
-from modules.signature_analysis import analyze_signature_pipeline
+from modules.image.preprocessing import validate_image
+from modules.signature.signature_analysis import analyze_signature_pipeline
 
 router = APIRouter()
 

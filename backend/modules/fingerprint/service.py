@@ -11,18 +11,18 @@ import time
 import uuid
 from pathlib import Path
 
-from fingerprint.preprocessing import preprocess_fingerprint
-from fingerprint.enhancement import enhance_ridges
-from fingerprint.minutiae import extract_fingerprint_minutiae, TYPE_ENDING, TYPE_BIFURCATION
-from fingerprint.matching import match_minutiae_sets, DEFAULT_MATCH_THRESHOLD
-from fingerprint.visualization import (
+from modules.fingerprint.preprocessing import preprocess_fingerprint
+from modules.fingerprint.enhancement import enhance_ridges
+from modules.fingerprint.minutiae import extract_fingerprint_minutiae, TYPE_ENDING, TYPE_BIFURCATION
+from modules.fingerprint.matching import match_minutiae_sets, DEFAULT_MATCH_THRESHOLD
+from modules.fingerprint.visualization import (
     render_minutiae_overlay,
     render_skeleton_image,
     render_comparison_canvas,
     save_image_artifact,
 )
 
-BASE_DIR = Path(__file__).parent.parent  # backend/
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # backend/
 OUTPUTS_DIR = BASE_DIR / "outputs" / "fingerprint"
 OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
 

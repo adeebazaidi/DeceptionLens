@@ -36,8 +36,10 @@ Thumbs.db
 # Project Specific
 backend/outputs/*
 !backend/outputs/.gitkeep
+!backend/outputs/*/.gitkeep
 backend/ml/models/*
 !backend/ml/models/.gitkeep
+dataset/fingerprints/fvc2002/DB*
 backend/datasets/fingerprints/fvc2002/DB*
 *.tif
 *.tiff

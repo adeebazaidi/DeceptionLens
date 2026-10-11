@@ -10,7 +10,7 @@ import pytest
 # Allow imports from backend root
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from modules.entropy_analysis import (
+from modules.image.entropy_analysis import (
     calculate_global_entropy,
     calculate_local_entropy,
     compute_entropy_stats,

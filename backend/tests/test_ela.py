@@ -13,7 +13,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from modules.ela_analysis import compute_ela_stats, perform_ela, save_ela_image
+from modules.image.ela_analysis import compute_ela_stats, perform_ela, save_ela_image
 
 
 def _make_temp_jpeg(size=(64, 64)) -> str:
