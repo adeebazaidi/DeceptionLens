@@ -54,7 +54,11 @@ export default function Home() {
         A simple and easy-to-use tool to analyze images, verify fingerprints, and detect signature forgeries.
       </p>
 
-      <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', marginTop: '3rem' }}>
+      <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', justifyContent: 'center', marginTop: '2.5rem' }}>
+        <Link to="/cases" id="start-cases-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+          <FileBadge size={20} /> Cases &amp; Evidence
+          <span aria-hidden="true">→</span>
+        </Link>
         <Link to="/analyze" id="start-analysis-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
           <Microscope size={20} /> Image Analysis
           <span aria-hidden="true">→</span>

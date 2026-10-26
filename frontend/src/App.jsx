@@ -7,6 +7,7 @@ import FingerprintComparison from './pages/FingerprintComparison.jsx'
 import SignatureAnalysis from './pages/SignatureAnalysis.jsx'
 
 import DocumentAnalysis from './pages/DocumentAnalysis.jsx'
+import Cases from './pages/Cases.jsx'
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/cases" element={<Cases />} />
         <Route path="/analyze" element={<ImageAnalysis />} />
         <Route path="/fingerprint" element={<FingerprintComparison />} />
         <Route path="/signature" element={<SignatureAnalysis />} />

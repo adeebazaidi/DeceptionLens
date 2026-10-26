@@ -25,6 +25,13 @@ export default function Navbar() {
           Home
         </Link>
         <Link
+          to="/cases"
+          id="nav-link-cases"
+          className={`nav-link${location.pathname === '/cases' ? ' active' : ''}`}
+        >
+          Cases &amp; Evidence
+        </Link>
+        <Link
           to="/analyze"
           className={`nav-link${location.pathname === '/analyze' ? ' active' : ''}`}
         >
