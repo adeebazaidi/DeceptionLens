@@ -59,15 +59,16 @@ async def analyze_signature(
         )
 
     ref_bytes: Optional[bytes] = None
+    ref_ext = ""
     if reference_file and reference_file.filename:
-        ref_ext = Path(reference_file.filename or "").suffix.lower()
+        ref_ext = Path(reference_file.filename).suffix.lower()
         if ref_ext not in ALLOWED_EXTENSIONS:
             raise HTTPException(
                 status_code=400,
                 detail=f"Unsupported file type '{ref_ext}' for reference signature. Supported: JPG, JPEG, PNG, WEBP.",
             )
         ref_bytes = await reference_file.read()
-        if len(ref_bytes) > MAX_SIZE_BYTES:
+        if len(ref_bytes or b"") > MAX_SIZE_BYTES:
             raise HTTPException(
                 status_code=413,
                 detail=f"Reference file exceeds maximum size of {MAX_SIZE_MB} MB.",
@@ -86,7 +87,7 @@ async def analyze_signature(
         validate_image(q_tmp_path)
 
         if ref_bytes:
-            with tempfile.NamedTemporaryFile(delete=False, suffix=Path(reference_file.filename).suffix.lower()) as tmp_r:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=ref_ext) as tmp_r:
                 tmp_r.write(ref_bytes)
                 r_tmp_path = tmp_r.name
             validate_image(r_tmp_path)

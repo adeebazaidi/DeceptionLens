@@ -82,7 +82,7 @@ def run_evaluation(
         # Fallback to bundled sample pairs
         socofing_sample = BACKEND_DIR.parent / "dataset" / "fingerprints" / "socofing" / "sample_pairs"
         fvc_sample = BACKEND_DIR.parent / "dataset" / "fingerprints" / "fvc2002" / "sample_pairs"
-        if "socofing" in str(dataset_dir).lower() and socofing_sample.exists():
+        if "socofing" in dataset_dir.lower() and socofing_sample.exists():
             print(f"Target path '{dataset_dir}' not found. Falling back to '{socofing_sample}'.")
             target_path = socofing_sample
         elif fvc_sample.exists():

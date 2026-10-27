@@ -11,7 +11,7 @@ constitute proof of image manipulation.
 """
 
 import os
-from typing import Dict
+from typing import Dict, Optional
 
 import cv2
 import numpy as np
@@ -63,7 +63,7 @@ def calculate_local_entropy(
 
 def compute_entropy_stats(
     gray: np.ndarray,
-    grid_size: int = None,
+    grid_size: Optional[int] = None,
 ) -> Dict[str, float]:
     """
     Compute a full entropy statistics dictionary.
@@ -106,7 +106,7 @@ def generate_entropy_heatmap(
     pil_image: Image.Image,
     gray: np.ndarray,
     output_path: str,
-    grid_size: int = None,
+    grid_size: Optional[int] = None,
 ) -> None:
     """
     Generate an entropy heatmap overlay and save it as a PNG.

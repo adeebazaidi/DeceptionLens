@@ -13,7 +13,7 @@ ELA is an ANALYTICAL INDICATOR — not proof of manipulation.
 
 import io
 import os
-from typing import Dict
+from typing import Dict, Optional
 
 import numpy as np
 from PIL import Image
@@ -21,8 +21,8 @@ from PIL import Image
 
 def perform_ela(
     image_path: str,
-    quality: int = None,
-    scale: int = None,
+    quality: Optional[int] = None,
+    scale: Optional[int] = None,
 ) -> Image.Image:
     """
     Perform Error Level Analysis on an image file.

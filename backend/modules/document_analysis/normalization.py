@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from typing import Optional
 from dateutil import parser as date_parser
 
 def normalize_date(date_str: str) -> str:
@@ -27,9 +27,10 @@ def normalize_location(loc_str: str) -> str:
     """
     return re.sub(r'\s+', ' ', loc_str.lower()).strip()
 
-def normalize_money(money_str: str) -> float:
+def normalize_money(money_str: str) -> Optional[float]:
     """
     Extracts the numerical value from a money string.
+    Returns None if no numeric value can be parsed.
     """
     # Remove commas, currency symbols, and spaces
     cleaned = re.sub(r'[^\d\.]', '', money_str)

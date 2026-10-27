@@ -12,13 +12,13 @@ HTTP status codes).
 import json
 import uuid
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from fastapi import HTTPException
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import Session
 
-from database.models import AnalysisRecord, AuditLog, Case, Evidence
+from database.models import AuditLog, Case, Evidence
 from api.schemas.case_schemas import (
     CaseCreate,
     CaseUpdate,
@@ -197,7 +197,7 @@ def update_case(db: Session, case_id: str, case_in: CaseUpdate) -> dict:
     if not case:
         raise HTTPException(status_code=404, detail=f"Case '{case_id}' not found.")
 
-    changes = {}
+    changes: Dict[str, Any] = {}
 
     if case_in.title is not None and case_in.title.strip() != case.title:
         changes["title"] = {"old": case.title, "new": case_in.title.strip()}

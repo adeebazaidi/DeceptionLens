@@ -3,11 +3,7 @@ import io
 from typing import List, Dict, Any
 import numpy as np
 from PIL import Image
-
-try:
-    import pymupdf as fitz  # Modern PyMuPDF
-except ImportError:
-    import fitz  # Legacy PyMuPDF
+import pymupdf as fitz
 import easyocr
 
 # Initialize EasyOCR reader (loads model weights into memory once)

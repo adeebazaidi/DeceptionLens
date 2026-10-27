@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 from .normalization import normalize_date, normalize_name, normalize_location, normalize_money
 
 def extract_role(source_text: str, roles_dict: Dict[str, List[str]]) -> str:
@@ -18,7 +18,7 @@ def extract_role(source_text: str, roles_dict: Dict[str, List[str]]) -> str:
                 return role
     return "unknown"
 
-def check_consistency(entities: Dict[str, List[Dict[str, Any]]], case_info: Dict[str, List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+def check_consistency(entities: Dict[str, List[Dict[str, Any]]], case_info: Optional[Dict[str, List[Dict[str, Any]]]] = None) -> Dict[str, Any]:
     """
     Analyzes extracted entities for internal inconsistencies.
     Uses source context to determine semantic fields and only compares values within the same field.

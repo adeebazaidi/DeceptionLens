@@ -1,0 +1,25 @@
+# Pyrefly (VS Code type checker) configuration.
+# Makes DeceptionLens its own project root so Pyrefly does not inherit
+# C:\Users\Chauh\pyproject.toml and its empty .venv.
+
+# Backend modules are imported relative to backend/ (e.g. `from database.models import ...`).
+search-path = ["backend"]
+
+# The Python interpreter is taken from the one selected in your editor
+# (VS Code: "Python: Select Interpreter"); pick one with requirements.txt installed.
+
+# Pyrefly cannot evaluate numpy 1.26's operator overloads (e.g. `array > 127`)
+# and its bundled cv2/skimage stubs target numpy 2.x, producing false ndarray
+# errors throughout the image pipelines. Treat these packages as Any.
+replace-imports-with-any = [
+    "numpy", "numpy.*",
+    "cv2", "cv2.*",
+    "skimage", "skimage.*",
+    "sklearn", "sklearn.*",
+    "dateutil", "dateutil.*",
+]
+
+[errors]
+# int()/float() around coordinates are intentional: they convert numpy scalars
+# to plain Python numbers for JSON responses.
+unnecessary-type-conversion = false
