@@ -1,13 +1,17 @@
 import os
 import io
-from typing import List, Dict, Any, Union
+from typing import List, Dict, Any
 import numpy as np
 from PIL import Image
-import fitz  # PyMuPDF
+
+try:
+    import pymupdf as fitz  # Modern PyMuPDF
+except ImportError:
+    import fitz  # Legacy PyMuPDF
 import easyocr
 
 # Initialize EasyOCR reader (loads model weights into memory once)
-reader = easyocr.Reader(['en'], gpu=False)
+reader = easyocr.Reader(['en'], gpu=False, verbose=False)
 
 def load_document(file_bytes: bytes, filename: str) -> List[Dict[str, Any]]:
     """

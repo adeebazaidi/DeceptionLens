@@ -39,6 +39,8 @@ backend/outputs/*
 !backend/outputs/*/.gitkeep
 backend/ml/models/*
 !backend/ml/models/.gitkeep
+backend/evidence_storage/
+backend/*.db
 dataset/fingerprints/fvc2002/DB*
 backend/datasets/fingerprints/fvc2002/DB*
 *.tif

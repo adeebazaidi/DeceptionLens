@@ -9,6 +9,7 @@ scikit-learn
 pandas
 joblib
 python-dotenv
+sqlalchemy>=2.0
 easyocr
 spacy
 PyMuPDF

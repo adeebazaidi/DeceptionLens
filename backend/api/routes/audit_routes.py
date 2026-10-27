@@ -1,8 +1,9 @@
 """
 Audit Trail REST API Routes
-===========================
-Provides read access to the forensic audit log for case chain-of-custody,
-evidence acquisitions, integrity checks, and investigative decisions.
+============================
+Thin FastAPI route handlers for read-only access to the forensic audit log.
+All query logic lives in modules.case_management — only the HTTP concerns
+(parameter parsing, dependency injection, 404 guards) live here.
 """
 
 from typing import Optional

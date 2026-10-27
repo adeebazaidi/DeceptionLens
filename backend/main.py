@@ -58,10 +58,6 @@ for sub in ("entropy", "ela", "noise", "fingerprint", "signature"):
 
 app.mount("/outputs", StaticFiles(directory=str(OUTPUTS_DIR)), name="outputs")
 
-# Ensure evidence storage directory exists
-EVIDENCE_STORAGE_DIR = BASE_DIR / "evidence_storage"
-EVIDENCE_STORAGE_DIR.mkdir(parents=True, exist_ok=True)
-
 # ── Routers ──────────────────────────────────────────────────────────────────
 app.include_router(image_router, prefix="/api/image", tags=["Image Analysis"])
 app.include_router(fingerprint_router, prefix="/api/fingerprint", tags=["Fingerprint Comparison"])
