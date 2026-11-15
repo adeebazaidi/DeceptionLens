@@ -43,3 +43,12 @@ dataset/fingerprints/fvc2002/DB*
 backend/datasets/fingerprints/fvc2002/DB*
 *.tif
 *.tiff
+
+# Database & Evidence Storage
+*.db
+*.db-shm
+*.db-wal
+backend/database/*.db*
+backend/evidence_storage/*
+!backend/evidence_storage/.gitkeep
+
