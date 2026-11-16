@@ -39,7 +39,8 @@ def get_dashboard_overview(db: Session) -> dict:
     cases_by_type = _count_by(db, Case.case_type, active_case)
     cases_by_priority = _count_by(db, Case.priority, active_case)
 
-    # Integrity checks: details is JSON text holding {"matches": bool, ...}
+    # Integrity checks: details is JSON text holding {"matches": bool, ...}.
+    # "Mismatches" counts every failed check (hash mismatch, missing file, read error).
     integrity_rows = db.query(AuditLog.details).filter(AuditLog.action_type == "INTEGRITY_CHECKED").all()
     mismatches = 0
     for (details,) in integrity_rows:

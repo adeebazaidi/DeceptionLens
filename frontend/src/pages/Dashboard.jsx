@@ -226,8 +226,8 @@ export default function DashboardView() {
               <div className="stat-value">{totals.integrity_checks}</div>
               <div className="stat-sub" style={{ color: totals.integrity_mismatches > 0 ? 'var(--risk-high)' : undefined }}>
                 {totals.integrity_mismatches > 0
-                  ? `⚠ ${totals.integrity_mismatches} mismatch${totals.integrity_mismatches === 1 ? '' : 'es'} found`
-                  : 'No mismatches found'}
+                  ? `⚠ ${totals.integrity_mismatches} failed check${totals.integrity_mismatches === 1 ? '' : 's'}`
+                  : 'All checks passed'}
               </div>
             </div>
           </div>
