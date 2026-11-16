@@ -4,7 +4,6 @@ Pydantic Schemas for Case and Evidence Management
 Validates request payloads and formats serialized API responses.
 """
 
-from datetime import datetime
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 

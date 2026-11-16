@@ -42,7 +42,7 @@ def _validate_file_metadata(file: UploadFile, label: str) -> str:
 
 
 @router.post("/compare")
-async def compare_fingerprint_endpoint(
+def compare_fingerprint_endpoint(
     reference: Optional[UploadFile] = File(None),
     questioned: Optional[UploadFile] = File(None),
     reference_image: Optional[UploadFile] = File(None),
@@ -90,8 +90,8 @@ async def compare_fingerprint_endpoint(
 
     # 2. Read contents and check sizes
     try:
-        ref_bytes = await ref_file.read()
-        quest_bytes = await quest_file.read()
+        ref_bytes = ref_file.file.read()
+        quest_bytes = quest_file.file.read()
     except Exception as exc:
         raise HTTPException(status_code=400, detail=f"Failed to read uploaded files: {str(exc)}") from exc
 
@@ -134,7 +134,7 @@ async def compare_fingerprint_endpoint(
 
 
 @router.get("/samples/{dataset}/{filename}")
-async def get_sample_fingerprint(dataset: str, filename: str):
+def get_sample_fingerprint(dataset: str, filename: str):
     """
     Serves bundled demonstration sample fingerprints for offline demonstration.
     Supports 'fvc2002' and 'socofing'.
@@ -143,8 +143,9 @@ async def get_sample_fingerprint(dataset: str, filename: str):
         raise HTTPException(status_code=404, detail="Unknown dataset.")
 
     safe_filename = Path(filename).name
+    # dataset/ lives at the repository root, one level above backend/
     sample_path = (
-        Path(__file__).resolve().parent.parent.parent
+        Path(__file__).resolve().parents[3]
         / "dataset"
         / "fingerprints"
         / dataset

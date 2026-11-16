@@ -29,7 +29,7 @@ router = APIRouter()
 # ── Evidence Upload for a Specific Case ───────────────────────────────────────
 
 @router.post("/cases/{case_id}/evidence", status_code=status.HTTP_201_CREATED)
-async def upload_evidence_for_case(
+def upload_evidence_for_case(
     case_id: str,
     file: UploadFile = File(...),
     evidence_name: str = Form(...),
@@ -44,9 +44,9 @@ async def upload_evidence_for_case(
     if not file or not file.filename:
         raise HTTPException(status_code=400, detail="No file provided.")
 
-    file_bytes = await file.read()
+    file_bytes = file.file.read()
 
-    return await upload_evidence(
+    return upload_evidence(
         db=db,
         case_id=case_id,
         file_bytes=file_bytes,
@@ -157,7 +157,7 @@ def update_evidence_status_route(
 # ── Run Forensic Analysis on Stored Evidence ──────────────────────────────────
 
 @router.post("/evidence/{evidence_id}/run-analysis")
-async def run_evidence_analysis_route(evidence_id: str, db: Session = Depends(get_db)):
+def run_evidence_analysis_route(evidence_id: str, db: Session = Depends(get_db)):
     """
     Executes forensic analysis on stored evidence using the appropriate module:
     - Image     -> modules.image pipeline (Entropy, ELA, Noise, Texture, Risk)
@@ -165,4 +165,4 @@ async def run_evidence_analysis_route(evidence_id: str, db: Session = Depends(ge
     - Document  -> modules.document_analysis pipeline (PyMuPDF, OCR, consistency check)
     Links the results permanently to the Case and Evidence.
     """
-    return await run_evidence_analysis(db=db, evidence_id=evidence_id)
+    return run_evidence_analysis(db=db, evidence_id=evidence_id)

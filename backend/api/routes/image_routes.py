@@ -40,7 +40,7 @@ def _unique_id() -> str:
 
 
 @router.post("/analyze")
-async def analyze_image(file: UploadFile = File(...)):
+def analyze_image(file: UploadFile = File(...)):
     """
     Analyze an uploaded image for forensic indicators.
 
@@ -60,7 +60,7 @@ async def analyze_image(file: UploadFile = File(...)):
         )
 
     # ── 2. Read and size-check ────────────────────────────────────────────────
-    content = await file.read()
+    content = file.file.read()
     if len(content) > MAX_SIZE_BYTES:
         raise HTTPException(
             status_code=413,

@@ -12,10 +12,10 @@ response schemas in api/schemas/case_schemas.py.
 
 import json
 from datetime import datetime, timezone
-from typing import Any, Optional
+from typing import Any, List, Optional
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.connection import Base
 
@@ -40,23 +40,23 @@ def _load_json(value: Optional[str]) -> Any:
 class Case(Base):
     __tablename__ = "cases"
 
-    id = Column(Integer, primary_key=True, index=True)
-    case_id = Column(String(64), unique=True, index=True, nullable=False)
-    title = Column(String(255), nullable=False)
-    description = Column(Text, default="")
-    case_type = Column(String(64), nullable=False, default="Other")
-    investigator = Column(String(128), nullable=False)
-    priority = Column(String(32), nullable=False, default="Medium")
-    status = Column(String(32), nullable=False, default="Open")
-    is_archived = Column(Boolean, nullable=False, default=False)
-    created_at = Column(DateTime(timezone=True), default=_utcnow)
-    updated_at = Column(DateTime(timezone=True), default=_utcnow)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    case_id: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    title: Mapped[str] = mapped_column(String(255))
+    description: Mapped[Optional[str]] = mapped_column(Text, default="")
+    case_type: Mapped[str] = mapped_column(String(64), default="Other")
+    investigator: Mapped[str] = mapped_column(String(128))
+    priority: Mapped[str] = mapped_column(String(32), default="Medium")
+    status: Mapped[str] = mapped_column(String(32), default="Open")
+    is_archived: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=_utcnow)
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
-    evidence = relationship(
-        "Evidence", back_populates="case", order_by="Evidence.uploaded_at"
+    evidence: Mapped[List["Evidence"]] = relationship(
+        back_populates="case", order_by="Evidence.uploaded_at"
     )
-    analysis_records = relationship(
-        "AnalysisRecord", back_populates="case", order_by="AnalysisRecord.created_at"
+    analysis_records: Mapped[List["AnalysisRecord"]] = relationship(
+        back_populates="case", order_by="AnalysisRecord.created_at"
     )
 
     def to_dict(self) -> dict:
@@ -80,24 +80,24 @@ class Case(Base):
 class Evidence(Base):
     __tablename__ = "evidence"
 
-    id = Column(Integer, primary_key=True, index=True)
-    evidence_id = Column(String(64), unique=True, index=True, nullable=False)
-    case_id = Column(String(64), ForeignKey("cases.case_id"), index=True, nullable=False)
-    evidence_name = Column(String(255), nullable=False)
-    description = Column(Text, default="")
-    evidence_type = Column(String(64), nullable=False, default="Image")
-    original_filename = Column(String(255), nullable=False)
-    storage_filename = Column(String(255), unique=True, nullable=False)
-    storage_path = Column(String(1024), nullable=False)
-    file_size = Column(Integer, nullable=False)
-    mime_type = Column(String(128), nullable=False, default="application/octet-stream")
-    sha256_hash = Column(String(64), nullable=False)
-    status = Column(String(32), nullable=False, default="Active")
-    uploaded_at = Column(DateTime(timezone=True), default=_utcnow)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    evidence_id: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    case_id: Mapped[str] = mapped_column(String(64), ForeignKey("cases.case_id"), index=True)
+    evidence_name: Mapped[str] = mapped_column(String(255))
+    description: Mapped[Optional[str]] = mapped_column(Text, default="")
+    evidence_type: Mapped[str] = mapped_column(String(64), default="Image")
+    original_filename: Mapped[str] = mapped_column(String(255))
+    storage_filename: Mapped[str] = mapped_column(String(255), unique=True)
+    storage_path: Mapped[str] = mapped_column(String(1024))
+    file_size: Mapped[int] = mapped_column(Integer)
+    mime_type: Mapped[str] = mapped_column(String(128), default="application/octet-stream")
+    sha256_hash: Mapped[str] = mapped_column(String(64))
+    status: Mapped[str] = mapped_column(String(32), default="Active")
+    uploaded_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
-    case = relationship("Case", back_populates="evidence")
-    analysis_records = relationship(
-        "AnalysisRecord", back_populates="evidence", order_by="AnalysisRecord.created_at"
+    case: Mapped["Case"] = relationship(back_populates="evidence")
+    analysis_records: Mapped[List["AnalysisRecord"]] = relationship(
+        back_populates="evidence", order_by="AnalysisRecord.created_at"
     )
 
     def to_dict(self) -> dict:
@@ -124,18 +124,20 @@ class Evidence(Base):
 class AnalysisRecord(Base):
     __tablename__ = "analysis_records"
 
-    id = Column(Integer, primary_key=True, index=True)
-    record_id = Column(String(64), unique=True, index=True, nullable=False)
-    case_id = Column(String(64), ForeignKey("cases.case_id"), index=True, nullable=False)
-    evidence_id = Column(String(64), ForeignKey("evidence.evidence_id"), index=True, nullable=True)
-    module_type = Column(String(64), nullable=False)
-    result_summary = Column(Text, default="")
-    verdict = Column(String(64), nullable=True)
-    result_data = Column(Text, default="{}")  # JSON-encoded
-    created_at = Column(DateTime(timezone=True), default=_utcnow)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    record_id: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    case_id: Mapped[str] = mapped_column(String(64), ForeignKey("cases.case_id"), index=True)
+    evidence_id: Mapped[Optional[str]] = mapped_column(
+        String(64), ForeignKey("evidence.evidence_id"), index=True
+    )
+    module_type: Mapped[str] = mapped_column(String(64))
+    result_summary: Mapped[Optional[str]] = mapped_column(Text, default="")
+    verdict: Mapped[Optional[str]] = mapped_column(String(64))
+    result_data: Mapped[Optional[str]] = mapped_column(Text, default="{}")  # JSON-encoded
+    created_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
-    case = relationship("Case", back_populates="analysis_records")
-    evidence = relationship("Evidence", back_populates="analysis_records")
+    case: Mapped["Case"] = relationship(back_populates="analysis_records")
+    evidence: Mapped[Optional["Evidence"]] = relationship(back_populates="analysis_records")
 
     def to_dict(self) -> dict:
         return {
@@ -160,14 +162,16 @@ class AuditLog(Base):
 
     __tablename__ = "audit_logs"
 
-    id = Column(Integer, primary_key=True, index=True)
-    event_id = Column(String(64), unique=True, index=True, nullable=False)
-    case_id = Column(String(64), index=True, nullable=True)
-    evidence_id = Column(String(64), index=True, nullable=True)
-    action_type = Column(String(64), index=True, nullable=False)
-    actor = Column(String(128), nullable=False, default="Forensic Examiner")
-    details = Column(Text, default="{}")  # JSON-encoded
-    created_at = Column(DateTime(timezone=True), default=_utcnow, index=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    event_id: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    case_id: Mapped[Optional[str]] = mapped_column(String(64), index=True)
+    evidence_id: Mapped[Optional[str]] = mapped_column(String(64), index=True)
+    action_type: Mapped[str] = mapped_column(String(64), index=True)
+    actor: Mapped[str] = mapped_column(String(128), default="Forensic Examiner")
+    details: Mapped[Optional[str]] = mapped_column(Text, default="{}")  # JSON-encoded
+    created_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), default=_utcnow, index=True
+    )
 
     def to_dict(self) -> dict:
         return {
@@ -180,3 +184,4 @@ class AuditLog(Base):
             "details": _load_json(self.details),
             "created_at": _iso(self.created_at),
         }
+

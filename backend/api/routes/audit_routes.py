@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 
 from database.connection import get_db
 from database.models import AuditLog, Case, Evidence
-from api.schemas.case_schemas import AuditLogListResponse, AuditLogResponse
+from api.schemas.case_schemas import AuditLogListResponse
 
 router = APIRouter()
 

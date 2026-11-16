@@ -1,15 +1,58 @@
 import re
-import spacy
 from typing import Dict, List, Any
 
-# Load spaCy model
-try:
-    nlp = spacy.load("en_core_web_sm")
-except OSError:
-    # Fallback if model not downloaded properly
-    import spacy.cli
-    spacy.cli.download("en_core_web_sm")
-    nlp = spacy.load("en_core_web_sm")
+SPACY_MODEL = "en_core_web_sm"
+
+# spaCy is loaded lazily on first use so that a broken or blocked spaCy
+# install only disables document NER instead of preventing the whole
+# backend from starting.
+_nlp = None
+
+
+class NLPUnavailableError(RuntimeError):
+    """Raised when the spaCy NLP engine cannot be loaded."""
+
+
+def get_nlp():
+    """Return the cached spaCy pipeline, loading it on first call."""
+    global _nlp
+    if _nlp is not None:
+        return _nlp
+
+    try:
+        import spacy
+    except ImportError as exc:
+        raise NLPUnavailableError(
+            f"The spaCy NLP engine could not be loaded: {exc}"
+        ) from exc
+
+    try:
+        _nlp = spacy.load(SPACY_MODEL)
+    except OSError:
+        # Fallback if model not downloaded properly
+        import spacy.cli
+        spacy.cli.download(SPACY_MODEL)
+        _nlp = spacy.load(SPACY_MODEL)
+    return _nlp
+
+# Identifier patterns. `\b` stops matches inside words (e.g. "fir" in
+# "confirmed"), and the captured ID must contain a digit so ordinary words
+# after "case"/"FIR" (e.g. "the case was closed") are not taken as IDs.
+_ID = r"([A-Z0-9\-/]*\d[A-Z0-9\-/]*)"
+CASE_NUMBER_PATTERN = r"(?i)\bcase(?:\s+no\.?|\s+number)?\s*[:\-#]?\s*" + _ID
+FIR_NUMBER_PATTERN = r"(?i)\bfir(?:\s+no\.?|\s+number)?\s*[:\-#]?\s*" + _ID
+PHONE_PATTERN = r"(?:\+?\d{1,3}[\s-]?)?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{4}"
+EMAIL_PATTERN = r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+
+# Currency amounts that spaCy's small English model misses, notably Indian
+# rupees ("Rs. 5,000", "₹1,20,000", "3 lakh", "5,000 rupees").
+_AMOUNT = r"\d(?:[\d,]*\d)?(?:\.\d+)?"  # must end in a digit, so "5,000," drops the comma
+_INDIAN_UNIT = r"(?:lakhs?|lacs?|crores?)"
+MONEY_PATTERN = (
+    # "Rs:" is accepted because OCR often misreads the period in "Rs." as a colon.
+    r"(?i)(?:₹|\brs\b[.:]?|\binr\b|\busd\b|\$|€|£)\s?" + _AMOUNT + r"(?:\s*" + _INDIAN_UNIT + r"\b)?"
+    r"|\b" + _AMOUNT + r"\s*(?:" + _INDIAN_UNIT + r"|rupees)\b"
+)
 
 FORENSIC_KEYWORDS = [
     "accused", "victim", "witness", "complaint", "evidence",
@@ -38,7 +81,10 @@ def extract_entities_and_info(pages: List[Dict[str, Any]]) -> Dict[str, Any]:
     """
     Extracts NLP entities, regex-based information, and forensic keywords from pages.
     Preserves page number and source context.
+    Raises NLPUnavailableError if spaCy cannot be loaded.
     """
+    nlp = get_nlp()
+
     entities = {
         "persons": [],
         "dates": [],
@@ -51,12 +97,7 @@ def extract_entities_and_info(pages: List[Dict[str, Any]]) -> Dict[str, Any]:
     phone_numbers = []
     email_addresses = []
     keywords = []
-    
-    case_number_pattern = r"(?i)(?:case(?:\s+no\.?|\s+number)?\s*[:\-]?\s*)([A-Z0-9\-/]+)"
-    fir_number_pattern = r"(?i)(?:fir(?:\s+no\.?|\s+number)?\s*[:\-]?\s*)([A-Z0-9\-/]+)"
-    phone_pattern = r"(?:\+?\d{1,3}[\s-]?)?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{4}"
-    email_pattern = r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
-    
+
     # Track seen to avoid exact duplicates on the same page
     seen_entities = set()
     
@@ -96,28 +137,40 @@ def extract_entities_and_info(pages: List[Dict[str, Any]]) -> Dict[str, Any]:
                     })
 
         # Regex
-        for match in re.finditer(case_number_pattern, raw_text):
+        for match in re.finditer(MONEY_PATTERN, raw_text):
+            val = match.group(0).strip()
+            k = f"money:{val}:{page_num}"
+            if k not in seen_entities:
+                seen_entities.add(k)
+                entities["money"].append({
+                    "value": val,
+                    "type": "MONEY",
+                    "page": page_num,
+                    "source_text": find_source_context(raw_text, val)
+                })
+
+        for match in re.finditer(CASE_NUMBER_PATTERN, raw_text):
             val = match.group(1).strip()
             k = f"case:{val}:{page_num}"
             if k not in seen_entities:
                 seen_entities.add(k)
                 case_numbers.append({"value": val, "page": page_num, "source_text": find_source_context(raw_text, val)})
                 
-        for match in re.finditer(fir_number_pattern, raw_text):
+        for match in re.finditer(FIR_NUMBER_PATTERN, raw_text):
             val = match.group(1).strip()
             k = f"fir:{val}:{page_num}"
             if k not in seen_entities:
                 seen_entities.add(k)
                 case_numbers.append({"value": val, "page": page_num, "source_text": find_source_context(raw_text, val)})
 
-        for match in re.finditer(phone_pattern, raw_text):
+        for match in re.finditer(PHONE_PATTERN, raw_text):
             val = match.group(0).strip()
             k = f"phone:{val}:{page_num}"
             if k not in seen_entities:
                 seen_entities.add(k)
                 phone_numbers.append({"value": val, "page": page_num, "source_text": find_source_context(raw_text, val)})
 
-        for match in re.finditer(email_pattern, raw_text):
+        for match in re.finditer(EMAIL_PATTERN, raw_text):
             val = match.group(0).strip()
             k = f"email:{val}:{page_num}"
             if k not in seen_entities:

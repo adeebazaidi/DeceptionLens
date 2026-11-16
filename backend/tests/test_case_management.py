@@ -11,8 +11,6 @@ Comprehensive unit and integration test suite covering:
 - Dashboard statistics calculation
 """
 
-import io
-import os
 import sys
 from pathlib import Path
 import pytest
@@ -22,8 +20,7 @@ from fastapi.testclient import TestClient
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from main import app
-from database.connection import init_db, get_db, SessionLocal
-from database.models import Case, Evidence, AuditLog
+from database.connection import init_db
 from storage.evidence_storage import STORAGE_DIR
 
 client = TestClient(app)

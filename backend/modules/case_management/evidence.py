@@ -23,13 +23,13 @@ from sqlalchemy.orm import Session
 
 from database.models import AnalysisRecord, Case, Evidence
 from storage.evidence_storage import (
-    ALLOWED_EXTENSIONS,
     MIME_TYPE_MAP,
     get_evidence_file_path,
     save_evidence_file,
     verify_evidence_integrity,
 )
 from modules.case_management.ids import generate_evidence_id
+from modules.document_analysis.nlp_service import NLPUnavailableError
 from modules.case_management.audit import log_audit_event
 
 
@@ -42,7 +42,7 @@ def _json_default(value):
 
 # ── Upload ────────────────────────────────────────────────────────────────────
 
-async def upload_evidence(
+def upload_evidence(
     db: Session,
     case_id: str,
     file_bytes: bytes,
@@ -336,7 +336,7 @@ def update_evidence_status(
 
 # ── Run Forensic Analysis ─────────────────────────────────────────────────────
 
-async def run_evidence_analysis(db: Session, evidence_id: str) -> dict:
+def run_evidence_analysis(db: Session, evidence_id: str) -> dict:
     """
     Executes forensic analysis on stored evidence using the appropriate module:
       - Image   -> modules.image pipeline (Entropy, ELA, Noise, Texture, Risk)
@@ -442,6 +442,11 @@ async def run_evidence_analysis(db: Session, evidence_id: str) -> dict:
             result_data = {"status": "unsupported", "type": evidence.evidence_type}
             module_name = "Other"
 
+    except NLPUnavailableError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail=f"Document analysis is temporarily unavailable. {exc}",
+        ) from exc
     except Exception as exc:
         raise HTTPException(
             status_code=500,

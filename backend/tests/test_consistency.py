@@ -5,7 +5,6 @@ Tests rule-based cross-field inconsistency detection across
 dates, locations, monetary amounts, person names, and case numbers.
 """
 
-import pytest
 from modules.document_analysis.consistency_checker import check_consistency
 
 
@@ -149,3 +148,80 @@ class TestDocumentConsistencyChecker:
         res = check_consistency(entities)
         assert len(res["issues"]) == 2
         assert res["status"] == "Multiple potential inconsistencies"
+
+
+class TestIdentifierPatterns:
+    """Regex patterns used to extract case / FIR numbers from document text."""
+
+    @staticmethod
+    def _ids(pattern, text):
+        import re
+        return [m.group(1) for m in re.finditer(pattern, text)]
+
+    def test_fir_number_extracted(self):
+        from modules.document_analysis.nlp_service import FIR_NUMBER_PATTERN
+        assert self._ids(FIR_NUMBER_PATTERN, "FIR No. 221/2024 registered") == ["221/2024"]
+
+    def test_fir_not_matched_inside_words(self):
+        """'fir' inside 'confirmed' must not yield a bogus FIR number."""
+        from modules.document_analysis.nlp_service import FIR_NUMBER_PATTERN
+        assert self._ids(FIR_NUMBER_PATTERN, "The witness confirmed the statement.") == []
+
+    def test_case_number_extracted(self):
+        from modules.document_analysis.nlp_service import CASE_NUMBER_PATTERN
+        assert self._ids(CASE_NUMBER_PATTERN, "Case No. CR-42/2023 and case number: 77") == ["CR-42/2023", "77"]
+
+    def test_plain_words_after_case_not_ids(self):
+        """'the case was closed' must not produce case number 'was'."""
+        from modules.document_analysis.nlp_service import CASE_NUMBER_PATTERN
+        assert self._ids(CASE_NUMBER_PATTERN, "In this case the matter was closed. Showcase 5 items.") == []
+
+
+class TestMoneyHandling:
+    """Rupee amounts: extraction pattern, normalization, and inconsistency detection."""
+
+    def test_normalize_money_values(self):
+        from modules.document_analysis.normalization import normalize_money
+        assert normalize_money("Rs. 5,000") == 5000.0  # previously 0.5 ("." from "Rs.")
+        assert normalize_money("Rs.7,500") == 7500.0
+        assert normalize_money("₹1,20,000.50") == 120000.5
+        assert normalize_money("$5,000") == 5000.0
+        assert normalize_money("3 lakh") == 300000.0
+        assert normalize_money("2.5 crore") == 25000000.0
+        assert normalize_money("no amount") is None
+
+    def test_money_pattern_finds_rupee_amounts(self):
+        import re
+        from modules.document_analysis.nlp_service import MONEY_PATTERN
+        text = "Paid Rs. 5,000 and ₹7,500, INR 200, then 3 lakh and 900 rupees. Room 42 is not money."
+        found = [m.group(0) for m in re.finditer(MONEY_PATTERN, text)]
+        assert found == ["Rs. 5,000", "₹7,500", "INR 200", "3 lakh", "900 rupees"]
+
+    def test_money_pattern_ignores_words_containing_rs(self):
+        import re
+        from modules.document_analysis.nlp_service import MONEY_PATTERN
+        assert [m.group(0) for m in re.finditer(MONEY_PATTERN, "Officers 12 and users 30")] == []
+
+    def test_money_pattern_tolerates_ocr_colon(self):
+        """OCR frequently reads 'Rs. 5,000' as 'Rs: 5,000'."""
+        import re
+        from modules.document_analysis.nlp_service import MONEY_PATTERN
+        from modules.document_analysis.normalization import normalize_money
+        found = [m.group(0) for m in re.finditer(MONEY_PATTERN, "the total amount Rs: 5,000 from")]
+        assert found == ["Rs: 5,000"]
+        assert normalize_money(found[0]) == 5000.0
+
+    def test_conflicting_rupee_totals_flagged(self):
+        entities = {"money": [
+            {"value": "Rs. 5,000", "source_text": "transferred the total amount Rs. 5,000 from"},
+            {"value": "Rs. 7,500", "source_text": "the total amount Rs. 7,500 is recorded"},
+        ]}
+        res = check_consistency(entities)
+        assert [i["type"] for i in res["issues"]] == ["AMOUNT_INCONSISTENCY"]
+
+    def test_same_amount_different_format_not_flagged(self):
+        entities = {"money": [
+            {"value": "Rs. 5,000", "source_text": "the total amount Rs. 5,000 was"},
+            {"value": "5,000 rupees", "source_text": "total amount of 5,000 rupees"},
+        ]}
+        assert check_consistency(entities)["issues"] == []

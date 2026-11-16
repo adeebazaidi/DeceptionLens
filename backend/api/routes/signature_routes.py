@@ -33,7 +33,7 @@ def _unique_id() -> str:
 
 
 @router.post("/analyze")
-async def analyze_signature(
+def analyze_signature(
     file: UploadFile = File(...),
     reference_file: Optional[UploadFile] = File(None),
 ):
@@ -51,7 +51,7 @@ async def analyze_signature(
         )
 
     # 2. Read and size check Query File
-    query_bytes = await file.read()
+    query_bytes = file.file.read()
     if len(query_bytes) > MAX_SIZE_BYTES:
         raise HTTPException(
             status_code=413,
@@ -67,7 +67,7 @@ async def analyze_signature(
                 status_code=400,
                 detail=f"Unsupported file type '{ref_ext}' for reference signature. Supported: JPG, JPEG, PNG, WEBP.",
             )
-        ref_bytes = await reference_file.read()
+        ref_bytes = reference_file.file.read()
         if len(ref_bytes or b"") > MAX_SIZE_BYTES:
             raise HTTPException(
                 status_code=413,

@@ -141,3 +141,37 @@ class TestOversizedFile:
             files={"file": ("big.jpg", data, "image/jpeg")},
         )
         assert response.status_code == 413
+
+
+class TestDocumentNLPUnavailable:
+    def test_returns_503_when_spacy_cannot_load(self, monkeypatch):
+        """A broken/blocked spaCy install should yield a clear 503, not a crash."""
+        import modules.document_analysis.analyzer as analyzer_mod
+        import modules.document_analysis.nlp_service as nlp_mod
+
+        def _fail():
+            raise nlp_mod.NLPUnavailableError("blocked by test")
+
+        monkeypatch.setattr(nlp_mod, "get_nlp", _fail)
+        # Skip real OCR to keep the test fast.
+        monkeypatch.setattr(
+            analyzer_mod,
+            "perform_ocr",
+            lambda pages: [{"page_num": 1, "raw_text": "Case No. 42", "ocr_items": []}],
+        )
+
+        response = client.post(
+            "/api/document/analyze",
+            files={"file": ("doc.png", _make_png_bytes(), "image/png")},
+        )
+        assert response.status_code == 503
+        assert "temporarily unavailable" in response.json()["detail"]
+
+    def test_oversized_document_returns_400(self):
+        """The size check must not be swallowed into a 500 by the generic handler."""
+        data = b"0" * (20 * 1024 * 1024 + 1)
+        response = client.post(
+            "/api/document/analyze",
+            files={"file": ("big.pdf", data, "application/pdf")},
+        )
+        assert response.status_code == 400

@@ -1,4 +1,4 @@
-from typing import Dict, Any, List
+from typing import Dict, Any
 from .ocr_service import load_document, perform_ocr, clean_text
 from .nlp_service import extract_entities_and_info
 from .consistency_checker import check_consistency
@@ -10,7 +10,6 @@ def analyze_document(file_bytes: bytes, filename: str) -> Dict[str, Any]:
     """
     # 1. Load Document
     ext = filename.split('.')[-1].lower() if '.' in filename else ''
-    is_pdf = ext == 'pdf'
     
     pages_raw = load_document(file_bytes, filename)
     page_count = len(pages_raw)

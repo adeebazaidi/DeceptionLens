@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Generator
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, declarative_base, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 BASE_DIR = Path(__file__).resolve().parent.parent  # backend/
 DEFAULT_DATABASE_URL = f"sqlite:///{(BASE_DIR / 'deceptionlens.db').as_posix()}"
@@ -23,7 +23,10 @@ _connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite"
 
 engine = create_engine(DATABASE_URL, connect_args=_connect_args)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
-Base = declarative_base()
+
+
+class Base(DeclarativeBase):
+    """Declarative base for all ORM models."""
 
 
 def init_db() -> None:
