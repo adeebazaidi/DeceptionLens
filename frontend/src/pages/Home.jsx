@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Microscope, Fingerprint, PenTool, Search, ShieldAlert, Lock, FileBadge, Crosshair, Activity } from 'lucide-react'
+import { Microscope, Fingerprint, PenTool, Search, ShieldAlert, Lock, FileBadge, Crosshair, Activity, LayoutDashboard } from 'lucide-react'
 
 export default function Home() {
   return (
@@ -55,6 +55,10 @@ export default function Home() {
       </p>
 
       <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', justifyContent: 'center', marginTop: '2.5rem' }}>
+        <Link to="/dashboard" id="start-dashboard-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+          <LayoutDashboard size={20} /> Dashboard &amp; Reports
+          <span aria-hidden="true">→</span>
+        </Link>
         <Link to="/cases" id="start-cases-button" className="hero-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
           <FileBadge size={20} /> Cases &amp; Evidence
           <span aria-hidden="true">→</span>

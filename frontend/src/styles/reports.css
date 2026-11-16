@@ -1,0 +1,323 @@
+/* ============================================================
+   DeceptionLens — Dashboard & Report Management styles
+   Builds on the tokens and components defined in app.css.
+   ============================================================ */
+
+.dl-page {
+  /* .app-root is a flex column: auto margins alone would shrink-wrap the page */
+  width: 100%;
+  padding: 1.5rem 2rem 4rem 2rem;
+  min-height: calc(100vh - 70px);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dl-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dl-page-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.dl-page-header p {
+  margin: 0.35rem 0 0 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ── Module tabs ────────────────────────────────────────────── */
+.dl-module-tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--border-dim);
+  margin-bottom: 1.25rem;
+}
+
+.dl-view-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.dl-view-toolbar p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* ── Panels ─────────────────────────────────────────────────── */
+.dl-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.dl-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 1.25rem;
+  min-width: 0;
+}
+
+.dl-panel-wide {
+  margin-bottom: 1rem;
+}
+
+.dl-panel-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.dl-panel-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0.15rem 0 1rem 0;
+}
+
+.dl-empty {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 0.5rem 0;
+}
+
+/* ── Horizontal bar list (single series) ────────────────────── */
+.dl-barlist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dl-barlist-row {
+  display: grid;
+  grid-template-columns: minmax(90px, 38%) 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: var(--radius-sm);
+  outline: none;
+}
+
+.dl-barlist-row:focus-visible {
+  box-shadow: 0 0 0 2px var(--accent-cyan-dim);
+}
+
+.dl-barlist-label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dl-barlist-track {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.dl-bar {
+  height: 10px;
+  border-radius: 0 4px 4px 0; /* rounded data-end, square at the baseline */
+  transition: filter 0.15s ease;
+  flex: none;
+}
+
+.dl-barlist-row:hover .dl-bar,
+.dl-barlist-row:focus-visible .dl-bar {
+  filter: brightness(1.15);
+}
+
+.dl-barlist-value {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.dl-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+/* ── Activity column chart ──────────────────────────────────── */
+.dl-activity {
+  position: relative;
+}
+
+.dl-activity svg {
+  display: block;
+  overflow: visible;
+}
+
+.dl-activity-col {
+  cursor: default;
+  outline: none;
+}
+
+.dl-activity-col:hover .dl-activity-bar,
+.dl-activity-col:focus-visible .dl-activity-bar {
+  filter: brightness(1.2);
+}
+
+.dl-axis-text {
+  font-size: 10px;
+  fill: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.dl-value-text {
+  font-size: 10px;
+  font-weight: 600;
+  fill: var(--text-primary);
+}
+
+.dl-tooltip {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  background: var(--text-primary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.55rem;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  box-shadow: var(--shadow-card);
+  z-index: 5;
+}
+
+.dl-tooltip strong {
+  display: block;
+  font-size: 0.85rem;
+}
+
+/* ── Compact tables ─────────────────────────────────────────── */
+.dl-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.dl-table th {
+  text-align: left;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border-dim);
+  white-space: nowrap;
+}
+
+.dl-table td {
+  padding: 0.6rem;
+  border-bottom: 1px solid var(--bg-card-hover);
+  vertical-align: top;
+  color: var(--text-secondary);
+}
+
+.dl-table tr:last-child td {
+  border-bottom: none;
+}
+
+.dl-mono {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.dl-muted {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.dl-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+/* ── Report generator form ──────────────────────────────────── */
+.dl-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem 1rem;
+}
+
+.dl-form-grid .full {
+  grid-column: 1 / -1;
+}
+
+.dl-verify-result {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.35rem;
+}
+
+.dl-verify-result.ok  { color: var(--risk-low); }
+.dl-verify-result.bad { color: var(--risk-high); }
+
+.dl-seal-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  background: var(--bg-base);
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dl-seal-box code {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  word-break: break-all;
+  color: var(--text-primary);
+}
+
+@media (max-width: 640px) {
+  .dl-page {
+    padding: 1rem 1rem 3rem 1rem;
+  }
+
+  .dl-page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .dl-panel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dl-barlist-row {
+    grid-template-columns: minmax(80px, 42%) 1fr;
+  }
+}

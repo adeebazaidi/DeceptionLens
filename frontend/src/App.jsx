@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Navbar from './components/Navbar.jsx'
 import Home from './pages/Home.jsx'
 import Footer from './components/Footer.jsx'
@@ -8,6 +8,7 @@ import SignatureAnalysis from './pages/SignatureAnalysis.jsx'
 
 import DocumentAnalysis from './pages/DocumentAnalysis.jsx'
 import Cases from './pages/Cases.jsx'
+import DashboardReports from './pages/DashboardReports.jsx'
 
 export default function App() {
   return (
@@ -15,6 +16,8 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<DashboardReports />} />
+        <Route path="/reports" element={<Navigate to="/dashboard?tab=reports" replace />} />
         <Route path="/cases" element={<Cases />} />
         <Route path="/analyze" element={<ImageAnalysis />} />
         <Route path="/fingerprint" element={<FingerprintComparison />} />

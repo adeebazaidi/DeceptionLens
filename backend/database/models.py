@@ -185,3 +185,48 @@ class AuditLog(Base):
             "created_at": _iso(self.created_at),
         }
 
+
+class ForensicReport(Base):
+    """
+    A saved, immutable snapshot of a case report. `content` holds the full
+    report JSON and `sha256_hash` seals it, so later tampering is detectable.
+    """
+
+    __tablename__ = "forensic_reports"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    report_id: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    case_id: Mapped[str] = mapped_column(String(64), ForeignKey("cases.case_id"), index=True)
+    title: Mapped[str] = mapped_column(String(255))
+    generated_by: Mapped[str] = mapped_column(String(128))
+    notes: Mapped[Optional[str]] = mapped_column(Text, default="")
+    content: Mapped[str] = mapped_column(Text)  # canonical JSON of the report
+    sha256_hash: Mapped[str] = mapped_column(String(64))
+    evidence_count: Mapped[int] = mapped_column(Integer, default=0)
+    analysis_count: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(String(32), default="Final")
+    created_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), default=_utcnow, index=True
+    )
+
+    case: Mapped["Case"] = relationship()
+
+    def to_dict(self, include_content: bool = False) -> dict:
+        data = {
+            "id": self.id,
+            "report_id": self.report_id,
+            "case_id": self.case_id,
+            "case_title": self.case.title if self.case else None,
+            "title": self.title,
+            "generated_by": self.generated_by,
+            "notes": self.notes or "",
+            "sha256_hash": self.sha256_hash,
+            "evidence_count": self.evidence_count,
+            "analysis_count": self.analysis_count,
+            "status": self.status,
+            "created_at": _iso(self.created_at),
+            "download_url": f"/api/reports/{self.report_id}/download",
+        }
+        if include_content:
+            data["content"] = _load_json(self.content)
+        return data

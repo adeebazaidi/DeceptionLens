@@ -22,6 +22,7 @@ from api.routes.document_routes import router as document_router
 from api.routes.case_routes import router as case_router
 from api.routes.evidence_routes import router as evidence_router
 from api.routes.audit_routes import router as audit_router
+from api.routes.report_routes import router as report_router
 from database.connection import init_db
 
 # ── App ─────────────────────────────────────────────────────────────────────
@@ -66,6 +67,7 @@ app.include_router(document_router, prefix="/api/document", tags=["Document Anal
 app.include_router(case_router, prefix="/api/cases", tags=["Case Management"])
 app.include_router(evidence_router, prefix="/api", tags=["Evidence Management"])
 app.include_router(audit_router, prefix="/api", tags=["Audit Trail"])
+app.include_router(report_router, prefix="/api")
 
 
 # ── Health ───────────────────────────────────────────────────────────────────
