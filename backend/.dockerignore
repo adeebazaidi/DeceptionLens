@@ -1,0 +1,15 @@
+.venv/
+venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Secrets and local runtime data are provided at run time, never baked in.
+.env
+*.db
+data/
+evidence_storage/
+outputs/
+ml/models/*.joblib

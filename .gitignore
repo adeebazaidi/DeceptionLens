@@ -41,6 +41,7 @@ backend/ml/models/*
 !backend/ml/models/.gitkeep
 backend/evidence_storage/
 backend/*.db
+backend/data/
 dataset/fingerprints/fvc2002/DB*
 backend/datasets/fingerprints/fvc2002/DB*
 *.tif

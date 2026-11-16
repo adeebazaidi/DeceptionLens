@@ -68,7 +68,7 @@ DeceptionLens/
 │   │   │   ├── __init__.py
 │   │   │   ├── preprocessing.py    # Image decode, grayscale, CLAHE, denoising
 │   │   │   ├── enhancement.py      # Orientation field, top-hat/black-hat, mask
-│   │   │   ├── minutiae.py         # Binarization, skeletonization, CN extraction
+│   │   │   ├── minutiae.py         # Binarization, skeletonization, CN extraction10:16 AM
 │   │   │   ├── matching.py         # Rigid alignment & tolerance minutiae pairing
 │   │   │   ├── visualization.py    # Minutiae overlays & comparison correspondence maps
 │   │   │   └── service.py          # End-to-end pipeline service orchestrator
@@ -126,6 +126,25 @@ DeceptionLens/
 ---
 
 ## Running the Backend
+
+### Option A — Docker (recommended on Windows)
+
+Runs the backend in a Linux container. Use this if Windows **Smart App Control**
+blocks spaCy (`DLL load failed ... An Application Control policy has blocked this file`),
+or simply to get an identical environment on every machine.
+
+```bash
+# From the repository root (Docker Desktop must be running)
+docker compose up --build      # first build downloads ~3–4 GB and takes 10–20 min
+docker compose up -d           # later: start in the background
+docker compose logs -f backend # follow logs
+docker compose down            # stop
+```
+
+The database, evidence files and generated images are stored on the host in
+`backend/data/` and `backend/outputs/`, so they survive rebuilds.
+
+### Option B — Local Python
 
 ```bash
 cd backend
@@ -470,6 +489,9 @@ Edit `backend/.env`:
 | `ELA_QUALITY`          | `90`                      | JPEG re-compression quality     |
 | `ELA_SCALE`            | `10`                      | ELA amplification factor        |
 | `ENTROPY_GRID_SIZE`    | `8`                       | Local entropy grid size (NxN)   |
+| `DATABASE_URL`         | `sqlite:///backend/deceptionlens.db` | Case/evidence database (SQLAlchemy URL) |
+| `EVIDENCE_STORAGE_DIR` | `backend/evidence_storage` | Where original evidence files are stored |
+| `MAX_EVIDENCE_SIZE_MB` | `50`                      | Max evidence upload size        |
 
 Risk thresholds can also be overridden via env vars (see `modules/forgery_detector.py`).
 

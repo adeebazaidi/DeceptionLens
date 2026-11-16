@@ -1,0 +1,26 @@
+# Run the backend:   docker compose up --build
+# Then the frontend as usual (cd frontend && npm run dev) — its proxy
+# already targets http://127.0.0.1:8000.
+
+services:
+  backend:
+    build: ./backend
+    image: deceptionlens-backend
+    ports:
+      - "127.0.0.1:8000:8000"
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      DATABASE_URL: sqlite:////app/data/deceptionlens.db
+      EVIDENCE_STORAGE_DIR: /app/data/evidence_storage
+    volumes:
+      # Database and evidence files persist on the host across rebuilds.
+      - ./backend/data:/app/data
+      # Generated heatmaps / ELA / noise / fingerprint images.
+      - ./backend/outputs:/app/outputs
+      # Trained ML models (optional).
+      - ./backend/ml/models:/app/ml/models
+      # Sample datasets served by /api/fingerprint/samples (read-only).
+      - ./dataset:/dataset:ro
+    restart: unless-stopped
