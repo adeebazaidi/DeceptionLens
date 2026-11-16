@@ -1,6 +1,7 @@
 fastapi
 uvicorn[standard]
 python-multipart
+sqlalchemy>=2.0
 opencv-python
 numpy
 Pillow
@@ -9,7 +10,6 @@ scikit-learn
 pandas
 joblib
 python-dotenv
-sqlalchemy>=2.0
 easyocr
 spacy
 PyMuPDF

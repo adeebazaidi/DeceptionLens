@@ -489,9 +489,9 @@ Edit `backend/.env`:
 | `ELA_QUALITY`          | `90`                      | JPEG re-compression quality     |
 | `ELA_SCALE`            | `10`                      | ELA amplification factor        |
 | `ENTROPY_GRID_SIZE`    | `8`                       | Local entropy grid size (NxN)   |
-| `DATABASE_URL`         | `sqlite:///backend/deceptionlens.db` | Case/evidence database (SQLAlchemy URL) |
+| `DATABASE_URL`         | `sqlite:///backend/database/deceptionlens.db` | Case/evidence database (SQLAlchemy URL) |
 | `EVIDENCE_STORAGE_DIR` | `backend/evidence_storage` | Where original evidence files are stored |
-| `MAX_EVIDENCE_SIZE_MB` | `50`                      | Max evidence upload size        |
+| `MAX_EVIDENCE_SIZE_MB` | `25`                      | Max evidence upload size        |
 
 Risk thresholds can also be overridden via env vars (see `modules/forgery_detector.py`).
 

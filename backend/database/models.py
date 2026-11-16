@@ -53,10 +53,10 @@ class Case(Base):
     updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
     evidence: Mapped[List["Evidence"]] = relationship(
-        back_populates="case", order_by="Evidence.uploaded_at"
+        back_populates="case", order_by="Evidence.uploaded_at.desc()"
     )
     analysis_records: Mapped[List["AnalysisRecord"]] = relationship(
-        back_populates="case", order_by="AnalysisRecord.created_at"
+        back_populates="case", order_by="AnalysisRecord.created_at.desc()"
     )
 
     def to_dict(self) -> dict:
@@ -97,7 +97,7 @@ class Evidence(Base):
 
     case: Mapped["Case"] = relationship(back_populates="evidence")
     analysis_records: Mapped[List["AnalysisRecord"]] = relationship(
-        back_populates="evidence", order_by="AnalysisRecord.created_at"
+        back_populates="evidence", order_by="AnalysisRecord.created_at.desc()"
     )
 
     def to_dict(self) -> dict:
